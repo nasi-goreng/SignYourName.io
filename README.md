@@ -1,5 +1,8 @@
 # SignYourName.io frontend
 
+### Node Version
+Working with v21.7.3 (it might be working with others, but I only tested with this)
+
 ### Tech Stack
 - React (JS)
 - Vite
