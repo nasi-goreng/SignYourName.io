@@ -40,11 +40,11 @@ function App() {
         <WebcamFeed className="mb-4 w-full md:w-1/2" />
         <div id="sign-images" className="flex flex-wrap justify-center">
           {name.split('').map((letter, index) => (
-        <div className="relative m-2">
-          <img key={index} src={`/images/${letter}.jpg`} alt={letter} className="w-full h-full" />
-          {successfulGestures[index] && <CheckMark className="absolute inset-0 w-full h-full text-green-500" />} {/* Conditionally render check mark */}
-          {/* https://commons.wikimedia.org/wiki/File:Eo_circle_green_checkmark.svg */}
-        </div>
+            <div key={index} className="relative m-2">
+              <img key={index} src={`/images/${letter}.jpg`} alt={letter} className="w-full h-full" />
+              {successfulGestures[index] && <CheckMark className="absolute inset-0 w-full h-full text-green-500" />} {/* Conditionally render check mark */}
+              {/* https://commons.wikimedia.org/wiki/File:Eo_circle_green_checkmark.svg */}
+            </div>
           ))}
         </div>
         <button onClick={() => handleGestureSuccess('A')} className="mb-4 p-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">Simulate 'A' Gesture</button>
