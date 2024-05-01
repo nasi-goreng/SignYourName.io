@@ -34,7 +34,7 @@ function App() {
       <Header />
       <div className="App flex flex-col items-center">
         {/* <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">SignYourName.io</h1> */}
-        <div class="mb-4">
+        <div className="mb-4">
         <input type="text" value={name} placeholder="your name" onChange={handleNameChange}  className="bg-transparent py-1 border-2 border-gray-300 rounded-md text-gray-600 px-4 focus:outline-none" />
         </div>
         <WebcamFeed className="mb-4 w-full md:w-1/2" />
