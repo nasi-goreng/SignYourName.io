@@ -3,9 +3,32 @@ import WebcamFeed from './WebcamFeed.jsx';
 import { ReactComponent as CheckMark } from './assets/checkmark.svg';
 import Header from './Header.jsx';
 
+async function loadModel() {
+  const model = await tf.loadLayersModel('path/to/tfjs_model/model.json');
+  return model;
+}
+
+const prepareInputData = (inputData) => {
+  // normalize input data
+  const normalizedInput = tf.div(tf.sub(input, tf.min(input)), tf.sub(tf.max(input), tf.min(input)));
+  return normalizedInput;
+}
+
 function App() {
   const [name, setName] = useState('');
   const [successfulGestures, setSuccessfulGestures] = useState([]); // New state
+
+  const predict = async () => {
+    const model = await loadModel();
+    const input = tf.tensor(inputData);
+    const output = model.predict(input);
+  }
+
+  const onFrameBatchFull = (batch) => {
+    console.log(batch);
+  }
+
+
 
   const handleNameChange = (event) => {
     setName(event.target.value.toUpperCase());
@@ -37,7 +60,7 @@ function App() {
         <div className="mb-4">
         <input type="text" value={name} placeholder="your name" onChange={handleNameChange}  className="bg-transparent py-1 border-2 border-gray-300 rounded-md text-gray-600 px-4 focus:outline-none" />
         </div>
-        <WebcamFeed className="mb-4 w-full md:w-1/2" />
+        <WebcamFeed onFrameBatchFull={onFrameBatchFull} className="mb-4 w-full md:w-1/2" />
         <div id="sign-images" className="flex flex-wrap justify-center">
           {name.split('').map((letter, index) => (
             <div key={index} className="relative m-2">

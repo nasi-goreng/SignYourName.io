@@ -24,7 +24,20 @@ const targetConnectionOpacity = 1;
 let currentDarkLayerOpacity = 0;
 const targetDarkLayerOpacity = 0.6;
 
-function WebcamFeed({ className }) {
+let framesBatch = [];
+
+
+/*
+  This is where you will write the logic to turn the hand landmarks into whatever format you need for your model....
+
+*/
+const formatHandLandmarksForModel = (multiHandLandmarks) => {
+  return multiHandLandmarks[0].map(({x, y, z}) => {
+    return [x, y, z];
+  });
+}
+
+function WebcamFeed({ className, onFrameBatchFull }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -69,8 +82,18 @@ function WebcamFeed({ className }) {
         context.fillStyle = `rgba(0, 0, 0, ${currentDarkLayerOpacity})`; // Set the overlay color to dark grey with 50% opacity
         context.fillRect(0, 0, canvasElement.width, canvasElement.height); // Cover the entire canvas with the overlay        
 
-        //if hands detected, fade in some layers
+        //if hands detected ... 
         if(results.multiHandLandmarks.length > 0) {
+
+
+          //add to frames array
+          if(framesBatch.length < 30) {
+            const formattedLandmarks = formatHandLandmarksForModel(results.multiHandLandmarks);
+            framesBatch.push(formattedLandmarks);
+          } else {
+            onFrameBatchFull(framesBatch);
+            framesBatch = [];
+          }
 
           //fade in dark layer
           if (currentDarkLayerOpacity < targetDarkLayerOpacity) {
