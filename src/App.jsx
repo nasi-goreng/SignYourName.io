@@ -3,8 +3,34 @@ import WebcamFeed from './WebcamFeed.jsx';
 import { ReactComponent as CheckMark } from './assets/checkmark.svg';
 import Header from './Header.jsx';
 
+const letters = ['C', 'G', 'J', 'M', 'N', 'Z'];
+
 async function loadModel() {
-  const model = await tf.loadLayersModel('path/to/tfjs_model/model.json');
+  const model = tf.sequential({
+    layers: [
+      tf.layers.conv1d({
+        inputShape: [630, 3],
+        kernelSize: 3,
+        filters: 32,
+        activation: 'relu'
+      }),
+      tf.layers.maxPooling1d({ poolSize: 2 }),
+      tf.layers.conv1d({
+        kernelSize: 3,
+        filters: 64,
+        activation: 'relu'
+      }),
+      tf.layers.flatten(),
+      tf.layers.dense({
+        units: 64,
+        activation: 'relu'
+      }), 
+      tf.layers.dense({
+        units: 6,
+        activation: 'softmax'
+      })
+    ]
+  });
   return model;
 }
 
@@ -18,14 +44,29 @@ function App() {
   const [name, setName] = useState('');
   const [successfulGestures, setSuccessfulGestures] = useState([]); // New state
 
-  const predict = async () => {
+  const predict = async (inputData) => {
     const model = await loadModel();
-    const input = tf.tensor(inputData);
-    const output = model.predict(input);
+    const output = model.predict(inputData);
+    return output;
   }
 
-  const onFrameBatchFull = (batch) => {
-    console.log(batch);
+  const onFrameBatchFull = async (batch) => {
+    const flattenedBatch = [];
+    for (let frame of batch){
+      flattenedBatch.push(...frame);
+    }
+    const inputTensor = tf.tensor3d([flattenedBatch]);
+    // Check the shape of the tensor
+    const result = await predict(inputTensor);
+    const probabilities = await result.array();
+    const probabilitiesInner = probabilities[0]
+    console.log({probabilities: probabilitiesInner})
+    const maxProb = Math.max(...probabilitiesInner)
+    console.log({maxProb})
+    const maxProbabilityIndex = probabilitiesInner.indexOf(maxProb);
+    console.log({maxProbabilityIndex})
+    const predictedLetter = letters[maxProbabilityIndex];
+    console.log(`Predicted letter: ${predictedLetter}`);
   }
 
 
