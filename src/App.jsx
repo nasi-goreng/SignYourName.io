@@ -6,7 +6,7 @@ import Header from './Header.jsx';
 const letters = ['C', 'G', 'J', 'M', 'N', 'Z'];
 
 async function loadModel() {
-  const model = await tf.loadLayersModel('/model/model.json');
+  const model = await tf.loadLayersModel('/images/model.json');
   return model;
 }
 
@@ -16,18 +16,18 @@ const normalizeInputData = (inputData) => {
   return normalizedInput;
 }
 
+let model = null;
+
 function App() {
   const [name, setName] = useState('');
   const [successfulGestures, setSuccessfulGestures] = useState([]); // New state
-  const [model, setModel] = useState(null);
 
   const predict = async (inputData) => {
-    let _model = model;
-    if(!_model) {
-      _model = await loadModel();
-      setModel(_model);
+  
+    if(!model) {
+      model = await loadModel();
     }
-    const output = _model.predict(inputData);
+    const output = model.predict(inputData);
     return output;
   }
 
