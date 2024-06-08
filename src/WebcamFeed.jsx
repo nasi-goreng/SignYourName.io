@@ -87,7 +87,7 @@ function WebcamFeed({ className, onFrameBatchFull }) {
 
 
           //add to frames array
-          if(framesBatch.length < 30) {
+          if(framesBatch.length < 10) {
             const formattedLandmarks = formatHandLandmarksForModel(results.multiHandLandmarks);
             framesBatch.push(formattedLandmarks);
           } else {
