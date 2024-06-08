@@ -134,7 +134,6 @@ function WebcamFeed({ className, onFrameBatchFull }) {
 
         //draw the hand landmarks
         for (const landmarks of results.multiHandLandmarks) {
-
           //https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.drawingoptions#drawingoptions_interface
           drawConnectors(context, landmarks, HAND_CONNECTIONS, { color: getConnectionColor(currentConnectionOpacity), lineWidth: 3 });
           drawLandmarks(context, landmarks, { color: getLandmarkColor(currentLandmarkOpacity), radius: 6.3 });

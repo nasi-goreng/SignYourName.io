@@ -21,6 +21,7 @@ let model = null;
 function App() {
   const [name, setName] = useState('');
   const [successfulGestures, setSuccessfulGestures] = useState([]); // New state
+  const [prediction, setPrediction] = useState('');
 
   const predict = async (inputData) => {
   
@@ -28,7 +29,12 @@ function App() {
       model = await loadModel();
     }
     const output = model.predict(inputData);
-    return output;
+    const probabilities = await output.array();
+    const probabilitiesInner = probabilities[0]
+    const maxProb = Math.max(...probabilitiesInner)
+    const maxProbabilityIndex = probabilitiesInner.indexOf(maxProb);
+    const predictedLetter = letters[maxProbabilityIndex];
+    setPrediction(predictedLetter)
   }
 
   const onFrameBatchFull = async (batch) => {
@@ -42,13 +48,7 @@ function App() {
 
 
     // Check the shape of the tensor
-    const result = await predict(inputTensor);
-    const probabilities = await result.array();
-    const probabilitiesInner = probabilities[0]
-    const maxProb = Math.max(...probabilitiesInner)
-    const maxProbabilityIndex = probabilitiesInner.indexOf(maxProb);
-    const predictedLetter = letters[maxProbabilityIndex];
-    console.log(`Predicted letter: ${predictedLetter}`);
+    predict(inputTensor);
   }
 
 
@@ -84,6 +84,7 @@ function App() {
         <input type="text" value={name} placeholder="your name" onChange={handleNameChange}  className="bg-transparent py-1 border-2 border-gray-300 rounded-md text-gray-600 px-4 focus:outline-none" />
         </div>
         <WebcamFeed onFrameBatchFull={onFrameBatchFull} className="mb-4 w-full md:w-1/2" />
+        <div>{prediction}</div>
         <div id="sign-images" className="flex flex-wrap justify-center">
           {name.split('').map((letter, index) => (
             <div key={index} className="relative m-2">
