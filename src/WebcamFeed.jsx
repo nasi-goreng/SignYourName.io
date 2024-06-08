@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { Hands, HAND_CONNECTIONS } from '@mediapipe/hands';
-import { Camera } from '@mediapipe/camera_utils';
+// import { Hands, HAND_CONNECTIONS } from '@mediapipe/hands';
+// import { Camera } from '@mediapipe/camera_utils';
 
 //https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.drawingutils
-import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+// import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
 const CANVAS_WIDTH = 1280;
 const CANVAS_HEIGHT = 720;
@@ -51,6 +51,11 @@ function WebcamFeed({ className, onFrameBatchFull }) {
 
     const context = canvasElement.getContext('2d');
 
+    console.log("loading hands!!! ")
+    console.log(Hands)
+    console.log(HAND_CONNECTIONS)
+    console.log(Camera)
+    console.log(useEffect)
     const hands = new Hands({
       locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
     });
