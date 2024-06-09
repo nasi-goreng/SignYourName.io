@@ -10,10 +10,52 @@ async function loadModel() {
   return model;
 }
 
-const normalizeInputData = (inputData) => {
-  // normalize input data
-  const normalizedInput = tf.div(tf.sub(input, tf.min(input)), tf.sub(tf.max(input), tf.min(input)));
-  return normalizedInput;
+const calcFrameCentroid = (frame) => {
+  let xSum = 0;
+  let ySum = 0;
+  frame.forEach(({x, y}) => {
+    xSum += x;
+    ySum += y;
+  })
+  const xMean = xSum / frame.length;
+  const yMean = ySum / frame.length;
+  const xMeanCentered = xMean - .5;
+  const yMeanCentered = yMean - .5;
+  return {xMeanCentered, yMeanCentered};
+}
+
+export const centerFrame = (frame) => {
+  const {xMeanCentered, yMeanCentered} = calcFrameCentroid(frame);
+
+  const centeredFrame = frame.map(({x, y, z}) => ({x: x - xMeanCentered, y: y - yMeanCentered, z: z}));
+  return centeredFrame;
+}
+
+export const scaleFrame = (frame) => {
+  const goal_average_distance = .1
+  const n = frame.length
+  const averageDistance = frame.reduce((acc, coord) => {
+    const distance = Math.sqrt(Math.pow(coord.x - 0.5, 2) + Math.pow(coord.y - 0.5, 2));
+    acc += distance;
+    return acc;
+  }, 0) / n;
+  console.log('Average Distance:', averageDistance);
+
+  const scalingFactor = goal_average_distance / averageDistance;
+  console.log('Scaling Factor:', scalingFactor);
+  
+  const scaledCoords = frame.map(coord => {
+    return {
+        x: 0.5 + scalingFactor * (coord.x - 0.5),
+        y: 0.5 + scalingFactor * (coord.y - 0.5)
+    };
+  });
+  return scaledCoords
+}
+
+export const normalizeBatch = (batch) => {
+  const normalizedBatch = batch.map(frame => centerFrame(scaleFrame(frame)));
+  return normalizedBatch;
 }
 
 let model = null;
@@ -24,6 +66,7 @@ function App() {
   const [prediction, setPrediction] = useState('');
 
   const predict = async (inputData) => {
+    
   
     if(!model) {
       model = await loadModel();

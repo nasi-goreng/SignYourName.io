@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { centerFrame, scaleFrame } from './App';
 // import { Hands, HAND_CONNECTIONS } from '@mediapipe/hands';
 // import { Camera } from '@mediapipe/camera_utils';
 
@@ -134,9 +135,10 @@ function WebcamFeed({ className, onFrameBatchFull }) {
 
         //draw the hand landmarks
         for (const landmarks of results.multiHandLandmarks) {
+          const centeredLandmarks = scaleFrame(centerFrame(landmarks));
           //https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.drawingoptions#drawingoptions_interface
-          drawConnectors(context, landmarks, HAND_CONNECTIONS, { color: getConnectionColor(currentConnectionOpacity), lineWidth: 3 });
-          drawLandmarks(context, landmarks, { color: getLandmarkColor(currentLandmarkOpacity), radius: 6.3 });
+          drawConnectors(context, centeredLandmarks, HAND_CONNECTIONS, { color: getConnectionColor(currentConnectionOpacity), lineWidth: 3 });
+          drawLandmarks(context, centeredLandmarks, { color: getLandmarkColor(currentLandmarkOpacity), radius: 6.3 });
         }
       }
       context.restore();
