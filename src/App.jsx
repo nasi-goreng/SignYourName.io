@@ -10,50 +10,83 @@ async function loadModel() {
   return model;
 }
 
-const calcFrameCentroid = (frame) => {
-  let xSum = 0;
-  let ySum = 0;
-  let zSum = 0;
-  frame.forEach(({x, y, z}) => {
-    xSum += x;
-    ySum += y;
-    zSum += z;
-  })
-  const xMean = xSum / frame.length;
-  const yMean = ySum / frame.length;
-  const zMean = zSum / frame.length;
-  const xMeanCentered = xMean - .5;
-  const yMeanCentered = yMean - .5;
-  const zMeanCentered = zMean;
-  return {xMeanCentered, yMeanCentered, zMeanCentered};
-}
+// const calcFrameCentroid = (frame) => {
+//   let xSum = 0;
+//   let ySum = 0;
+//   let zSum = 0;
+//   frame.forEach(({x, y, z}) => {
+//     xSum += x;
+//     ySum += y;
+//     zSum += z;
+//   })
+//   const xMean = xSum / frame.length;
+//   const yMean = ySum / frame.length;
+//   const zMean = zSum / frame.length;
+//   const xMeanCentered = xMean - .5;
+//   const yMeanCentered = yMean - .5;
+//   const zMeanCentered = zMean;
+//   return {xMeanCentered, yMeanCentered, zMeanCentered};
+// }
 
 export const centerFrame = (frame) => {
-  const {xMeanCentered, yMeanCentered, zMeanCentered} = calcFrameCentroid(frame);
+    // Calculate the centroid of the frame
+    let centroidX = 0, centroidY = 0, centroidZ = 0;
+    frame.forEach(coord => {
+        centroidX += coord.x;
+        centroidY += coord.y;
+        centroidZ += coord.z;
+    });
+    const n = frame.length;
+    centroidX /= n;
+    centroidY /= n;
+    centroidZ /= n;
 
-  const centeredFrame = frame.map(({x, y, z}) => ({x: x - xMeanCentered, y: y - yMeanCentered, z: z - zMeanCentered}));
-  return centeredFrame;
+    // Translate the frame to the origin centered at (0.5, 0.5, 0.5)
+    const translatedFrame = frame.map(coord => ({
+        x: coord.x - centroidX + 0.5,
+        y: coord.y - centroidY + 0.5,
+        z: coord.z - centroidZ + 0.5
+    }));
+
+    return translatedFrame;
 }
 
 export const scaleFrame = (frame) => {
-  const goal_average_distance = .1
-  const n = frame.length
-  const averageDistance = frame.reduce((acc, coord) => {
-    const distance = Math.sqrt(Math.pow(coord.x - 0.5, 2) + Math.pow(coord.y - 0.5, 2));
-    acc += distance;
-    return acc;
-  }, 0) / n;
-
-  const scalingFactor = goal_average_distance / averageDistance;
-  
-  const scaledCoords = frame.map(coord => {
-    return {
-        x: 0.5 + scalingFactor * (coord.x - 0.5),
-        y: 0.5 + scalingFactor * (coord.y - 0.5),
-        z: 0.5 + scalingFactor * (coord.z - 0.5)
-    };
+  // Calculate the centroid of the frame
+  let centroidX = 0, centroidY = 0, centroidZ = 0;
+  frame.forEach(coord => {
+      centroidX += coord.x;
+      centroidY += coord.y;
+      centroidZ += coord.z;
   });
-  return scaledCoords
+  const n = frame.length;
+  centroidX /= n;
+  centroidY /= n;
+  centroidZ /= n;
+
+  // Calculate the average distance from the centroid to all points
+  let totalDistance = 0;
+  frame.forEach(coord => {
+      totalDistance += Math.sqrt(
+          Math.pow(coord.x - centroidX, 2) +
+          Math.pow(coord.y - centroidY, 2) +
+          Math.pow(coord.z - centroidZ, 2)
+      );
+  });
+  const averageDistance = totalDistance / n;
+
+  // Calculate the scaling factor to normalize the average distance to a fixed value (e.g., 0.1)
+  const desiredAverageDistance = 0.1;
+  const scalingFactor = desiredAverageDistance / averageDistance;
+
+  // Apply the scaling transformation to the entire frame
+  const normalizedFrame = frame.map(coord => ({
+      x: (coord.x - centroidX) * scalingFactor + centroidX,
+      y: (coord.y - centroidY) * scalingFactor + centroidY,
+      z: (coord.z - centroidZ) * scalingFactor + centroidZ
+  }));
+
+  return normalizedFrame;
 }
 
 export const normalizeBatch = (batch) => {
