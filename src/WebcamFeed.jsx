@@ -27,16 +27,8 @@ const targetDarkLayerOpacity = 0.6;
 
 let framesBatch = [];
 
+let logged = false;
 
-/*
-  This is where you will write the logic to turn the hand landmarks into whatever format you need for your model....
-
-*/
-const formatHandLandmarksForModel = (multiHandLandmarks) => {
-  return multiHandLandmarks[0].map(({x, y, z}) => {
-    return [x, y, z];
-  });
-}
 
 function WebcamFeed({ className, onFrameBatchFull }) {
   const videoRef = useRef(null);
@@ -52,11 +44,6 @@ function WebcamFeed({ className, onFrameBatchFull }) {
 
     const context = canvasElement.getContext('2d');
 
-    console.log("loading hands!!! ")
-    console.log(Hands)
-    console.log(HAND_CONNECTIONS)
-    console.log(Camera)
-    console.log(useEffect)
     const hands = new Hands({
       locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
     });
@@ -90,12 +77,15 @@ function WebcamFeed({ className, onFrameBatchFull }) {
 
         //if hands detected ... 
         if(results.multiHandLandmarks.length > 0) {
+          // if(!logged) {
+            console.log("results unprocessed ", results.multiHandLandmarks[0][0].z)
+          //   logged = true;
+          // }
 
 
           //add to frames array
           if(framesBatch.length < 10) {
-            const formattedLandmarks = formatHandLandmarksForModel(results.multiHandLandmarks);
-            framesBatch.push(formattedLandmarks);
+            framesBatch.push(results.multiHandLandmarks[0]);
           } else {
             onFrameBatchFull(framesBatch);
             framesBatch = [];

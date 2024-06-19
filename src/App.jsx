@@ -3,7 +3,7 @@ import WebcamFeed from './WebcamFeed.jsx';
 import { ReactComponent as CheckMark } from './assets/checkmark.svg';
 import Header from './Header.jsx';
 
-const letters = ['C', 'G', 'J', 'M', 'N', 'Z'];
+const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 async function loadModel() {
   const model = await tf.loadLayersModel('/images/model.json');
@@ -13,21 +13,25 @@ async function loadModel() {
 const calcFrameCentroid = (frame) => {
   let xSum = 0;
   let ySum = 0;
-  frame.forEach(({x, y}) => {
+  let zSum = 0;
+  frame.forEach(({x, y, z}) => {
     xSum += x;
     ySum += y;
+    zSum += z;
   })
   const xMean = xSum / frame.length;
   const yMean = ySum / frame.length;
+  const zMean = zSum / frame.length;
   const xMeanCentered = xMean - .5;
   const yMeanCentered = yMean - .5;
-  return {xMeanCentered, yMeanCentered};
+  const zMeanCentered = zMean;
+  return {xMeanCentered, yMeanCentered, zMeanCentered};
 }
 
 export const centerFrame = (frame) => {
-  const {xMeanCentered, yMeanCentered} = calcFrameCentroid(frame);
+  const {xMeanCentered, yMeanCentered, zMeanCentered} = calcFrameCentroid(frame);
 
-  const centeredFrame = frame.map(({x, y, z}) => ({x: x - xMeanCentered, y: y - yMeanCentered, z: z}));
+  const centeredFrame = frame.map(({x, y, z}) => ({x: x - xMeanCentered, y: y - yMeanCentered, z: z - zMeanCentered}));
   return centeredFrame;
 }
 
@@ -39,15 +43,14 @@ export const scaleFrame = (frame) => {
     acc += distance;
     return acc;
   }, 0) / n;
-  console.log('Average Distance:', averageDistance);
 
   const scalingFactor = goal_average_distance / averageDistance;
-  console.log('Scaling Factor:', scalingFactor);
   
   const scaledCoords = frame.map(coord => {
     return {
         x: 0.5 + scalingFactor * (coord.x - 0.5),
-        y: 0.5 + scalingFactor * (coord.y - 0.5)
+        y: 0.5 + scalingFactor * (coord.y - 0.5),
+        z: 0.5 + scalingFactor * (coord.z - 0.5)
     };
   });
   return scaledCoords
@@ -60,38 +63,72 @@ export const normalizeBatch = (batch) => {
 
 let model = null;
 
+/*
+  This is where you will write the logic to turn the hand landmarks into whatever format you need for your model....
+
+*/
+let logged = false;
+
+const preProcess = (batch) => {
+  
+  
+  //scale and center the frames
+  const centeredBatch = batch.map(frame => scaleFrame(centerFrame(frame)));
+
+  //restructure so its a series of arrays instead of objects
+  const formattedForModel = centeredBatch.map(batch => {
+    return batch.map(({x, y, z}) => {
+      return [x, y, z];
+    });
+  });
+
+  //flatten that into 
+  const flattenedBatch = formattedForModel.map(landMarks => landMarks.reduce((acc, curr) => [...acc, ...curr], []));
+  // if(!logged) {
+    console.log("flattened batch ", flattenedBatch[0][2])
+  //   logged = true;
+  // }
+  
+  const inputTensor = tf.tensor3d([flattenedBatch]);
+
+  return inputTensor
+}
+
 function App() {
   const [name, setName] = useState('');
   const [successfulGestures, setSuccessfulGestures] = useState([]); // New state
   const [prediction, setPrediction] = useState('');
 
   const predict = async (inputData) => {
-    
-  
-    if(!model) {
+    if (!model) {
       model = await loadModel();
     }
-    const output = model.predict(inputData);
+
+    const processedBatch = preProcess(inputData)
+
+    const output = model.predict(processedBatch);
     const probabilities = await output.array();
-    const probabilitiesInner = probabilities[0]
-    const maxProb = Math.max(...probabilitiesInner)
-    const maxProbabilityIndex = probabilitiesInner.indexOf(maxProb);
-    const predictedLetter = letters[maxProbabilityIndex];
-    setPrediction(predictedLetter)
+    const probabilitiesInner = probabilities[0];
+    const sortedIndices = probabilitiesInner.map((prob, index) => ({ prob, index }))
+      .sort((a, b) => b.prob - a.prob)
+      .slice(0, 3);
+    // sortedIndices.forEach(({ prob, index }) => {
+    //   console.log(`Letter: ${letters[index]}, Probability: ${(prob * 100).toFixed(2)}%`);
+    // });
+    const predictedLetter = letters[sortedIndices[0].index];
+    setPrediction(predictedLetter);
   }
 
   const onFrameBatchFull = async (batch) => {
     //batch comes in as 10x21x3
     //flatten the sub arrays so that it is 10x63
-    const flattenedBatch = batch.map(landMarks => landMarks.reduce((acc, curr) => [...acc, ...curr], []));
-    
-    const inputTensor = tf.tensor3d([flattenedBatch]);
+
 
     //const normalizedInputTensor = normalizeInputData(inputTensor);
 
 
     // Check the shape of the tensor
-    predict(inputTensor);
+    predict(batch);
   }
 
 
