@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { centerFrame, scaleFrame } from './App';
+import { centerFrame, scaleFrame } from '../utils/modelUtils';
 // import { Hands, HAND_CONNECTIONS } from '@mediapipe/hands';
 // import { Camera } from '@mediapipe/camera_utils';
 
@@ -10,17 +10,16 @@ const CANVAS_WIDTH = 1280;
 const CANVAS_HEIGHT = 720;
 
 const getLandmarkColor = (opacity) => {
-  return `rgba(255, 0, 0, ${opacity})`
-}
+  return `rgba(255, 0, 0, ${opacity})`;
+};
 let currentLandmarkOpacity = 0;
 const targetLandmarkOpacity = 1;
 
 const getConnectionColor = (opacity) => {
-  return `rgba(0, 255, 0, ${opacity})`
-}
+  return `rgba(0, 255, 0, ${opacity})`;
+};
 let currentConnectionOpacity = 0;
 const targetConnectionOpacity = 1;
-
 
 let currentDarkLayerOpacity = 0;
 const targetDarkLayerOpacity = 0.6;
@@ -28,7 +27,6 @@ const targetDarkLayerOpacity = 0.6;
 let framesBatch = [];
 
 let logged = false;
-
 
 function WebcamFeed({ className, onFrameBatchFull }) {
   const videoRef = useRef(null);
@@ -38,25 +36,23 @@ function WebcamFeed({ className, onFrameBatchFull }) {
     const videoElement = videoRef.current;
     const canvasElement = canvasRef.current;
 
-
-    canvasElement.width = CANVAS_WIDTH;  // Match the width set for the camera
+    canvasElement.width = CANVAS_WIDTH; // Match the width set for the camera
     canvasElement.height = CANVAS_HEIGHT; // Match the height set for the camera
 
     const context = canvasElement.getContext('2d');
 
     const hands = new Hands({
-      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
     });
 
     hands.setOptions({
       maxNumHands: 1,
       modelComplexity: 1,
       minDetectionConfidence: 0.5,
-      minTrackingConfidence: 0.5
+      minTrackingConfidence: 0.5,
     });
 
     hands.onResults((results) => {
-
       /* 
         this is the interface for results 
         export interface Results {
@@ -71,20 +67,18 @@ function WebcamFeed({ className, onFrameBatchFull }) {
       context.clearRect(0, 0, canvasElement.width, canvasElement.height);
       context.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
       if (results.multiHandLandmarks) {
-
         context.fillStyle = `rgba(0, 0, 0, ${currentDarkLayerOpacity})`; // Set the overlay color to dark grey with 50% opacity
-        context.fillRect(0, 0, canvasElement.width, canvasElement.height); // Cover the entire canvas with the overlay        
+        context.fillRect(0, 0, canvasElement.width, canvasElement.height); // Cover the entire canvas with the overlay
 
-        //if hands detected ... 
-        if(results.multiHandLandmarks.length > 0) {
+        //if hands detected ...
+        if (results.multiHandLandmarks.length > 0) {
           // if(!logged) {
-            console.log("results unprocessed ", results.multiHandLandmarks[0][0].z)
+          console.log('results unprocessed ', results.multiHandLandmarks[0][0].z);
           //   logged = true;
           // }
 
-
           //add to frames array
-          if(framesBatch.length < 10) {
+          if (framesBatch.length < 10) {
             framesBatch.push(results.multiHandLandmarks[0]);
           } else {
             onFrameBatchFull(framesBatch);
@@ -93,7 +87,7 @@ function WebcamFeed({ className, onFrameBatchFull }) {
 
           //fade in dark layer
           if (currentDarkLayerOpacity < targetDarkLayerOpacity) {
-            currentDarkLayerOpacity += .03;
+            currentDarkLayerOpacity += 0.03;
           }
 
           //fade in landmarks and connections
@@ -104,7 +98,7 @@ function WebcamFeed({ className, onFrameBatchFull }) {
             currentConnectionOpacity += 0.03;
           }
         } else {
-        //if no hands detected, fade out layers
+          //if no hands detected, fade out layers
 
           //fade out dark backgroud
           if (currentDarkLayerOpacity > 0) {
@@ -121,13 +115,15 @@ function WebcamFeed({ className, onFrameBatchFull }) {
             currentConnectionOpacity = 0;
           }
         }
-       
 
         //draw the hand landmarks
         for (const landmarks of results.multiHandLandmarks) {
           const centeredLandmarks = scaleFrame(centerFrame(landmarks));
           //https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.drawingoptions#drawingoptions_interface
-          drawConnectors(context, centeredLandmarks, HAND_CONNECTIONS, { color: getConnectionColor(currentConnectionOpacity), lineWidth: 3 });
+          drawConnectors(context, centeredLandmarks, HAND_CONNECTIONS, {
+            color: getConnectionColor(currentConnectionOpacity),
+            lineWidth: 3,
+          });
           drawLandmarks(context, centeredLandmarks, { color: getLandmarkColor(currentLandmarkOpacity), radius: 6.3 });
         }
       }
@@ -139,16 +135,19 @@ function WebcamFeed({ className, onFrameBatchFull }) {
         await hands.send({ image: videoElement });
       },
       width: CANVAS_WIDTH,
-      height: CANVAS_HEIGHT
+      height: CANVAS_HEIGHT,
     });
     camera.start();
-
   }, []);
 
   return (
     <div className={`${className} aspect-[16/9] relative`}>
-      <video ref={videoRef} className="w-full h-full object-cover" style={{ display: 'none' }} />
-      <canvas ref={canvasRef} className="w-full h-full absolute top-0 left-0" />
+      <video ref={videoRef} className="w-full h-full object-cover rounded-2xl" style={{ transform: 'scaleX(-1)' }} />
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full absolute top-0 left-0 rounded-2xl"
+        style={{ transform: 'scaleX(-1)' }}
+      />
     </div>
   );
 }
