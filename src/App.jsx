@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import Header from './components/Header';
 import HomePage from './components/HomePage';
 import ReadyPage from './components/ReadyPage';
@@ -9,13 +10,14 @@ import './index.css';
 
 function App() {
   const [name, setName] = useState('');
-  const [successfulGestures, setSuccessfulGestures] = useState([]); // New state
+  const [successfulGestures, setSuccessfulGestures] = useState([]);
+  const location = useLocation();
 
   return (
-    <Router>
-      <div className="App">
-        <Header />
-        <Routes>
+    <div className="App">
+      <Header />
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
           <Route path="/" element={<HomePage />} />
           <Route path="/ready" element={<ReadyPage />} />
           <Route
@@ -31,9 +33,15 @@ function App() {
           />
           <Route path="/about" element={<AboutPage />} />
         </Routes>
-      </div>
-    </Router>
+      </AnimatePresence>
+    </div>
   );
 }
 
-export default App;
+const AppWrapper = () => (
+  <Router>
+    <App />
+  </Router>
+);
+
+export default AppWrapper;
