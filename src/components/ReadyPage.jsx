@@ -3,9 +3,6 @@ import Button from './Button';
 import AnimatedCircle from './AnimatedCircle';
 
 const ReadyPage = () => {
-  // const positionA = { top: -61, left: 649 };
-  // const positionB = { top: 815, left: 1172 };
-  // const positionC = { top: 61, left: 1336 };
 
   const positionA = { top: '-6%', left: '45%' };
   const positionB = { top: '80%', left: '81.4%' };

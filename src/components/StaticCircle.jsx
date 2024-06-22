@@ -1,10 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const AnimatedCircle = ({ initialPosition, targetPosition, delay }) => {
+const StaticCircle = ({ style, isVisible }) => {
   return (
     <motion.div
+      className="absolute"
       style={{
+        ...style,
         width: '164px',
         height: '164px',
         backgroundColor: '#FFE08F',
@@ -12,11 +14,12 @@ const AnimatedCircle = ({ initialPosition, targetPosition, delay }) => {
         position: 'absolute',
         zIndex: 2,
       }}
-      initial={{ top: initialPosition.top, left: initialPosition.left }}
-      animate={{ top: targetPosition.top, left: targetPosition.left }}
-      transition={{ duration: 0.4}}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isVisible ? 1 : 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.1 }}
     />
   );
 };
 
-export default AnimatedCircle;
+export default StaticCircle;
