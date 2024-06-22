@@ -7,10 +7,14 @@ const Header = () => {
 
   return (
     <header className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center bg-transparent z-10">
-      <Link to="/" className={`text-3xl font-semibold ${isAboutPage ? 'text-white' : 'text-black'}`}>
+      <Link
+        to="/"
+        className={`text-3xl font-semibold ${isAboutPage ? 'text-white' : 'text-black'}`}
+        style={{ position: 'relative', left: '14.65%' }}
+      >
         Sign<i>Your </i>Name
       </Link>
-      <nav>
+      <nav style={{ position: 'relative', right: '14.65%' }}>
         {location.pathname !== '/' && (
           <Link to="/" className={`mr-4 text-2xl font-medium ${isAboutPage ? 'text-white' : 'text-black'}`}>
             Home

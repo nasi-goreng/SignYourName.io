@@ -3,16 +3,19 @@ import Button from './Button';
 import AnimatedCircle from './AnimatedCircle';
 
 const HomePage = () => {
-  const positionA = { top: -61, left: 649 };
-  const positionB = { top: 815, left: 1172 };
-  const positionC = { top: 61, left: 1336 };
+  // const positionA = { top: -61, left: 649 };
+  // const positionB = { top: 815, left: 1172 };
+  // const positionC = { top: 61, left: 1336 };
+  const positionA = { top: '-6%', left: '45%' };
+  const positionB = { top: '80%', left: '81.4%' };
+  const positionC = { top: '6%', left: '92.8%' };
 
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-center relative overflow-hidden">
       <AnimatedCircle initialPosition={positionA} targetPosition={positionC} delay={0.2} />
       <AnimatedCircle initialPosition={positionB} targetPosition={positionA} delay={0.2} />
       <AnimatedCircle initialPosition={positionC} targetPosition={positionB} delay={0.2} />
-      <div className="text-left w-[441px] h-[512px] absolute top-[298px] left-[213px] gap-[32px] flex flex-col items-start">
+      <div className="text-left w-[441px] h-[512px] absolute top-[20.8%] left-[14.8%] gap-[32px] flex flex-col items-start">
         <h1 className="text-[80px] font-[450] leading-[80px] text-[#2B2B2B] mb-4">Hello, my name is...</h1>
         <div className="relative">
           <div className="animate-blink w-[2px] h-[104px] bg-[#2B2B2B] absolute top-0"></div>
