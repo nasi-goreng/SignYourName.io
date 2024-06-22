@@ -67,7 +67,7 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) 
       <div id="sign-images" className="flex flex-wrap justify-center">
         {name.split('').map((letter, index) => (
           <div key={index} className="relative m-2">
-            <img key={index} src={`/images/${letter}.jpg`} alt={letter} className="w-full h-full" />
+            <img key={index} src={`/images/examples/${letter}.jpg`} alt={letter} className="w-full h-full" />
             {successfulGestures[index] && <CheckMark className="absolute inset-0 w-full h-full text-green-500" />}
           </div>
         ))}
