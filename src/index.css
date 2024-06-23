@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Additional styles */
+.bg-cream {
+  background-color: #FDF6EE;
+}
