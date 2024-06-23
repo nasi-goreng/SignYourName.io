@@ -6,15 +6,14 @@ const Header = () => {
   const isAboutPage = location.pathname === '/about';
 
   return (
-    <header className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center bg-transparent z-20">
+    <header className="absolute top-5 left-0 right-0 p-4 flex justify-between items-center bg-transparent z-20">
       <Link
         to="/"
-        className={`text-3xl font-semibold ${isAboutPage ? 'text-white' : 'text-black'}`}
-        style={{ position: 'relative', left: '14.65%' }}
+        className={`text-3xl font-semibold relative left-[14.65%] ${isAboutPage ? 'text-white' : 'text-black'}`}
       >
         Sign<i>Your </i>Name
       </Link>
-      <nav style={{ position: 'relative', right: '14.65%' }}>
+      <nav className="absolute right-[14.65%]">
         {location.pathname !== '/' && (
           <Link to="/" className={`mr-4 text-2xl font-medium ${isAboutPage ? 'text-white' : 'text-black'}`}>
             Home

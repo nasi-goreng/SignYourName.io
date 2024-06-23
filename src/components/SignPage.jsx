@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import WebcamFeed from './WebcamFeed';
 import { ReactComponent as CheckMark } from '../assets/checkmark.svg';
 import { loadModel, preProcess, letters } from '../utils/modelUtils';
+import StaticCircle from './StaticCircle';
+import Rectangle from './Rectangle';
+import { useLocation } from 'react-router-dom';
 
 let model = null;
 
 const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) => {
+  const [visiblity, setVisiblity] = useState(true);
+  useEffect(() => {
+    setVisiblity(true);
+    return () => {
+      setVisiblity(false);
+    };
+  }, [location]);
+
   const [prediction, setPrediction] = useState('');
 
   const predict = async (inputData) => {
@@ -72,6 +83,17 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) 
           </div>
         ))}
       </div>
+
+      {/* Decorative Teal Rectangles */}
+      <Rectangle className={`absolute h-[155px] top-[-7%] left-[89%] rotate-[70deg]`} isVisible={visiblity} />
+      <Rectangle className={`absolute h-[64px] top-[45%] left-[-1%] rotate-[30deg]`} isVisible={visiblity} />
+      <Rectangle className={`absolute h-[450px] top-[63%] left-[95%] rotate-[57deg]`} isVisible={visiblity} />
+      <Rectangle className={`absolute h-[580px] top-[73%] left-[60%] rotate-[80deg]`} isVisible={visiblity} />
+
+      {/* Decorative Yello Circles */}
+      <StaticCircle className={`top-[-3.64%] left-[74.58%]`} isVisible={visiblity} />
+      <StaticCircle className={`top-[90.47%] left-[75.49%]`} isVisible={visiblity} />
+      <StaticCircle className={`top-[29.97%] left-[-3.40%]`} isVisible={visiblity} />
     </div>
   );
 };
