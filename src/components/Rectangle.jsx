@@ -8,7 +8,7 @@ const Rectangle = ({ isVisible, className }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: isVisible ? 1 : 0 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.1 }}
+      transition={{ duration: 0.2 }}
     />
   );
 };
