@@ -1,9 +1,10 @@
 import * as tf from '@tensorflow/tfjs';
 
+
 export const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
-export async function loadModel() {
-  const model = await tf.loadLayersModel('/images/model.json');
+export async function loadModel(path) {
+  const model = await tf.loadLayersModel(path);
   return model;
 }
 
@@ -64,8 +65,20 @@ export const scaleFrame = (frame) => {
   return normalizedFrame;
 };
 
-export const preProcess = (batch) => {
-  const centeredBatch = batch.map((frame) => scaleFrame(centerFrame(frame)));
+export const preProcess = (batch, modelConfig) => {
+
+  const normalization = modelConfig.normalization;
+
+  const centeredBatch = batch.map((frame) => {
+    let normalized = frame;
+    if (normalization.includes("center")) {
+      normalized = centerFrame(frame);
+    }
+    if (normalization.includes("scale")) {
+      normalized = scaleFrame(normalized);
+    }
+    return normalized;
+  });
 
   const formattedForModel = centeredBatch.map((batch) => {
     return batch.map(({ x, y, z }) => {

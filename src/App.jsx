@@ -11,6 +11,9 @@ import './index.css';
 function App() {
   const [name, setName] = useState('');
   const [successfulGestures, setSuccessfulGestures] = useState([]);
+
+  //todo - maybe this state can be lower, like just in the sign in page
+  const [selectedModel, setSelectedModel] = useState("model1");
   const location = useLocation();
 
   return (
@@ -24,6 +27,8 @@ function App() {
             path="/sign"
             element={
               <SignPage
+                setSelectedModel={setSelectedModel}
+                selectedModel={selectedModel}
                 name={name}
                 setName={setName}
                 successfulGestures={successfulGestures}

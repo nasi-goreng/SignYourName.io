@@ -5,10 +5,12 @@ import { loadModel, preProcess, letters } from '../utils/modelUtils';
 import StaticCircle from './StaticCircle';
 import Rectangle from './Rectangle';
 import { useLocation } from 'react-router-dom';
+import PropTypes from 'prop-types'; // ES6
+import { modelConfigs } from '../modelConfigs';
 
 let model = null;
 
-const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) => {
+const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, setSelectedModel, selectedModel }) => {
   const [visiblity, setVisiblity] = useState(true);
   useEffect(() => {
     setVisiblity(true);
@@ -19,12 +21,14 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) 
 
   const [prediction, setPrediction] = useState('');
 
+  const modelConfig = modelConfigs[selectedModel];
+
   const predict = async (inputData) => {
     if (!model) {
-      model = await loadModel();
+      model = await loadModel(modelConfig.path);
     }
 
-    const processedBatch = preProcess(inputData);
+    const processedBatch = preProcess(inputData, modelConfig);
     const output = model.predict(processedBatch);
     const probabilities = await output.array();
     const probabilitiesInner = probabilities[0];
@@ -59,6 +63,18 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) 
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden">
       <WebcamFeed onFrameBatchFull={onFrameBatchFull} className="mt-10 mb-10 w-[668px]" />
+      <div className="flex items-center space-x-4">
+      <select
+        className="w-[200px] h-[40px] bg-[#FFFFFF] border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none"
+        onChange={(e) => setSelectedModel(e.target.value)}
+        value={selectedModel}
+      >
+        <option value="model1">Single Layer LSTM</option>
+        <option value="model2">Model 2</option>
+        <option value="model3">Model 3</option>
+      </select>
+        
+      </div>
       <div className="flex items-center space-x-4">
         <input
           type="text"
@@ -97,5 +113,15 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) 
     </div>
   );
 };
+
+SignPage.propTypes = {
+  name: PropTypes.string.isRequired,
+  setName: PropTypes.func.isRequired,
+  successfulGestures: PropTypes.array.isRequired,
+  setSuccessfulGestures: PropTypes.func.isRequired,
+  setSelectedModel: PropTypes.func.isRequired, 
+  selectedModel: PropTypes.string.isRequired,
+
+}
 
 export default SignPage;
