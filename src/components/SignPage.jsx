@@ -58,7 +58,7 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) 
 
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden">
-      <WebcamFeed onFrameBatchFull={onFrameBatchFull} className="mb-8 w-[668px]" />
+      <WebcamFeed onFrameBatchFull={onFrameBatchFull} className="mt-10 mb-10 w-[668px]" />
       <div className="flex items-center space-x-4">
         <input
           type="text"
@@ -88,7 +88,7 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) 
       <Rectangle className={`absolute h-[155px] top-[-7%] left-[89%] rotate-[70deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[64px] top-[45%] left-[-1%] rotate-[30deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[450px] top-[63%] left-[95%] rotate-[57deg]`} isVisible={visiblity} />
-      <Rectangle className={`absolute h-[580px] top-[73%] left-[60%] rotate-[80deg]`} isVisible={visiblity} />
+      <Rectangle className={`absolute h-[580px] top-[74%] left-[60%] rotate-[80deg]`} isVisible={visiblity} />
 
       {/* Decorative Yello Circles */}
       <StaticCircle className={`top-[-3.64%] left-[74.58%]`} isVisible={visiblity} />
