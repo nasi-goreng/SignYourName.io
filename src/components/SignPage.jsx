@@ -7,6 +7,8 @@ import Rectangle from './Rectangle';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types'; // ES6
 import { modelConfigs } from '../modelConfigs';
+import runModel from '../utils/ModelInference'
+import { useOnnxSession } from '../utils/OnnxSessionContext';
 
 let model = null;
 
@@ -17,11 +19,14 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, se
     return () => {
       setVisiblity(false);
     };
-  }, [location]);
+}, [location]);
 
   const [prediction, setPrediction] = useState('');
+  
 
   const modelConfig = modelConfigs[selectedModel];
+  const session = useOnnxSession();
+  console.log({session})
 
   const predict = async (inputData) => {
     if (!model) {
@@ -41,8 +46,16 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, se
     setPrediction(predictedLetter);
   };
 
-  const onFrameBatchFull = async (batch) => {
-    predict(batch);
+  const onFrameBatchFull = async (batch, session) => {
+    console.log('this is session in frame batch full! ', session)
+    if(modelConfig.modelExportType === "tfjs"){
+      predict(batch);
+    } else {
+      runModel(batch, session).then((gesture) => {
+        handleGestureSuccess(gesture);
+        console.log(gesture);
+      })
+    }
   };
 
   const handleNameChange = (event) => {
@@ -60,9 +73,10 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, se
     }
   };
 
+  console.log("session before return in sign in page ", session)
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden">
-      <WebcamFeed onFrameBatchFull={onFrameBatchFull} className="mt-10 mb-10 w-[668px]" />
+      <WebcamFeed session={session} onFrameBatchFull={onFrameBatchFull} className="mt-10 mb-10 w-[668px]" modelConfig={modelConfig}/>
       <div className="flex items-center space-x-4">
       <select
         className="w-[200px] h-[40px] bg-[#FFFFFF] border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none"

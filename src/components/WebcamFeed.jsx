@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { centerFrame, scaleFrame } from '../utils/modelUtils';
+import { model } from '@tensorflow/tfjs';
+import { useOnnxSession } from '../utils/OnnxSessionContext';
 // import { Hands, HAND_CONNECTIONS } from '@mediapipe/hands';
 // import { Camera } from '@mediapipe/camera_utils';
 
@@ -28,9 +30,11 @@ let framesBatch = [];
 
 let logged = false;
 
-function WebcamFeed({ className, onFrameBatchFull }) {
+function WebcamFeed({ className, onFrameBatchFull, modelConfig }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+
+  const session = useOnnxSession();
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -72,16 +76,13 @@ function WebcamFeed({ className, onFrameBatchFull }) {
 
         //if hands detected ...
         if (results.multiHandLandmarks.length > 0) {
-          // if(!logged) {
-          console.log('results unprocessed ', results.multiHandLandmarks[0][0].z);
-          //   logged = true;
-          // }
 
           //add to frames array
-          if (framesBatch.length < 10) {
+          if (framesBatch.length < modelConfig.frameBatchSize) {
             framesBatch.push(results.multiHandLandmarks[0]);
           } else {
-            onFrameBatchFull(framesBatch);
+            console.log('this is session inside webcam feed ', session)
+            onFrameBatchFull(framesBatch, session);
             framesBatch = [];
           }
 
@@ -138,7 +139,7 @@ function WebcamFeed({ className, onFrameBatchFull }) {
       height: CANVAS_HEIGHT,
     });
     camera.start();
-  }, []);
+  }, [session]);
 
   return (
     <div className={`${className} aspect-[16/9] relative`}>
