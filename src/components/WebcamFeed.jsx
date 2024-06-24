@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { centerFrame, scaleFrame } from '../utils/modelUtils';
+import { centerFrame, scaleFrame } from '../utils/tfjsUtils';
 import { model } from '@tensorflow/tfjs';
 import { useOnnxSession } from '../utils/OnnxSessionContext';
 // import { Hands, HAND_CONNECTIONS } from '@mediapipe/hands';
@@ -81,8 +81,7 @@ function WebcamFeed({ className, onFrameBatchFull, modelConfig }) {
           if (framesBatch.length < modelConfig.frameBatchSize) {
             framesBatch.push(results.multiHandLandmarks[0]);
           } else {
-            console.log('this is session inside webcam feed ', session)
-            onFrameBatchFull(framesBatch, session);
+            onFrameBatchFull(framesBatch, session, modelConfig);
             framesBatch = [];
           }
 

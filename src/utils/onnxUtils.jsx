@@ -17,8 +17,7 @@ const indexToLetter = (index) => {
   return letters[index] || '';
 };
 
-const runModel = async (handLandmarks, session) => {
-    console.log('this is session inside run model ', session)
+export const predictONNX = async (handLandmarks, session) => {
     if (handLandmarks && handLandmarks.length === 30) {
         
         try {
@@ -34,7 +33,6 @@ const runModel = async (handLandmarks, session) => {
             const prediction = outputTensor.data;
             const predictedIndex = prediction.indexOf(Math.max(...prediction));
 
-            console.log(indexToLetter(predictedIndex));
             return indexToLetter(predictedIndex);
         } catch (err) {
             console.error('Failed to load ONNX model:', err);
@@ -44,5 +42,3 @@ const runModel = async (handLandmarks, session) => {
         return null;
     }
 }
-
-export default runModel;

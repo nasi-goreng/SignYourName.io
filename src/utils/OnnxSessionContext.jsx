@@ -7,12 +7,10 @@ const OnnxSessionContext = createContext(null);
 export const useOnnxSession = () => {
   
   const c = useContext(OnnxSessionContext);
-  console.log("c inside useonnnxsescion ", c)
   return c
 };
 
 export const OnnxSessionProvider = ({ children, modelConfig }) => {
-  console.log("OnnxSessionProvider is being called!" )
   const [session, setSession] = useState(null);
 
   useEffect(() => {
@@ -20,7 +18,6 @@ export const OnnxSessionProvider = ({ children, modelConfig }) => {
     const loadModel = async () => {
       try {
         const session = await ort.InferenceSession.create(modelConfig.path);
-        console.log("sesion inside onnxsessioncontexgt ", session)
         setSession(session);
       } catch (err) {
         console.error('Failed to load ONNX model:', err);

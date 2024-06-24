@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import WebcamFeed from './WebcamFeed';
 import { ReactComponent as CheckMark } from '../assets/checkmark.svg';
-import { loadModel, preProcess, letters } from '../utils/modelUtils';
 import StaticCircle from './StaticCircle';
 import Rectangle from './Rectangle';
-import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types'; // ES6
-import { modelConfigs } from '../modelConfigs';
-import runModel from '../utils/ModelInference'
 import { useOnnxSession } from '../utils/OnnxSessionContext';
-
-let model = null;
+import { predictONNX } from '../utils/onnxUtils'
+import { modelConfigs, TFJS, ONNX } from '../modelConfigs';
 
 const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, setSelectedModel, selectedModel }) => {
   const [visiblity, setVisiblity] = useState(true);
@@ -23,38 +19,18 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, se
 
   const [prediction, setPrediction] = useState('');
   
+  const session = useOnnxSession();
 
   const modelConfig = modelConfigs[selectedModel];
-  const session = useOnnxSession();
-  console.log({session})
 
-  const predict = async (inputData) => {
-    if (!model) {
-      model = await loadModel(modelConfig.path);
-    }
-
-    const processedBatch = preProcess(inputData, modelConfig);
-    const output = model.predict(processedBatch);
-    const probabilities = await output.array();
-    const probabilitiesInner = probabilities[0];
-    const sortedIndices = probabilitiesInner
-      .map((prob, index) => ({ prob, index }))
-      .sort((a, b) => b.prob - a.prob)
-      .slice(0, 3);
-
-    const predictedLetter = letters[sortedIndices[0].index];
-    setPrediction(predictedLetter);
-  };
-
-  const onFrameBatchFull = async (batch, session) => {
-    console.log('this is session in frame batch full! ', session)
-    if(modelConfig.modelExportType === "tfjs"){
-      predict(batch);
+  const onFrameBatchFull = async (batch, session, modelConfig) => {
+    if(modelConfig.modelExportType === TFJS){
+      const predictedLetter = await predict(batch);
+      setPrediction(predictedLetter);
     } else {
-      runModel(batch, session).then((gesture) => {
-        handleGestureSuccess(gesture);
-        console.log(gesture);
-      })
+      const predictedLetter = await predictONNX(batch, session)
+      setPrediction(predictedLetter);
+      handleGestureSuccess(predictedLetter);
     }
   };
 
@@ -73,7 +49,6 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, se
     }
   };
 
-  console.log("session before return in sign in page ", session)
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden">
       <WebcamFeed session={session} onFrameBatchFull={onFrameBatchFull} className="mt-10 mb-10 w-[668px]" modelConfig={modelConfig}/>
