@@ -51,7 +51,7 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, se
         value={selectedModel}
       >
         <option value="model1">Single Layer LSTM</option>
-        <option value="model2">Model 2</option>
+        <option value="model2">Jesus Model</option>
         <option value="model3">Model 3</option>
       </select>
         

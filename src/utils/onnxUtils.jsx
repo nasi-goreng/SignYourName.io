@@ -17,7 +17,7 @@ export const indexToLetter = (index) => {
   return letters[index] || '';
 };
 
-export const predictONNX = async (handLandmarks, session) => {
+export const predictONNX = async (handLandmarks, session, setPrediction, handleGestureSuccess) => {
     if (handLandmarks && handLandmarks.length === 30) {
         
         try {
@@ -33,7 +33,8 @@ export const predictONNX = async (handLandmarks, session) => {
             const prediction = outputTensor.data;
             const predictedIndex = prediction.indexOf(Math.max(...prediction));
 
-            return indexToLetter(predictedIndex);
+            setPrediction(indexToLetter(predictedIndex));
+            handleGestureSuccess(indexToLetter(predictedIndex))
         } catch (err) {
             console.error('Failed to load ONNX model:', err);
             return null;

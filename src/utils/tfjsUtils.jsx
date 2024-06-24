@@ -93,8 +93,9 @@ export const preProcess = (batch, modelConfig) => {
   return inputTensor;
 };
 
+let model = null;
 
-export const predictTFJS = async (inputData, model, modelConfig) => {
+export const predictTFJS = async (inputData, modelConfig, setPrediction, handleGestureSuccess) => {
   if (!model) {
     model = await loadModel(modelConfig.path);
   }
@@ -108,5 +109,6 @@ export const predictTFJS = async (inputData, model, modelConfig) => {
     .sort((a, b) => b.prob - a.prob)
     .slice(0, 3);
 
-  return letters[sortedIndices[0].index];
+  setPrediction(letters[sortedIndices[0].index]);
+  handleGestureSuccess(letters[sortedIndices[0].index])
 };

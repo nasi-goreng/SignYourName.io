@@ -71,8 +71,6 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
       if (results.multiHandLandmarks) {
         context.fillStyle = `rgba(0, 0, 0, ${currentDarkLayerOpacity})`; // Set the overlay color to dark grey with 50% opacity
         context.fillRect(0, 0, canvasElement.width, canvasElement.height); // Cover the entire canvas with the overlay
-
-        console.log("this is model config! ", modelConfig)
         //if hands detected ...
         if (results.multiHandLandmarks.length > 0) {
 
@@ -81,13 +79,9 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
             framesBatch.push(results.multiHandLandmarks[0]);
           } else {
             if(modelConfig.modelExportType === TFJS){
-              const predictedLetter = await predictTFJS(framesBatch, TFJSmodel, modelConfig);
-              setPrediction(predictedLetter);
-              handleGestureSuccess(predictedLetter);
+              predictTFJS(framesBatch, modelConfig, setPrediction, handleGestureSuccess);
             } else {
-              const predictedLetter = await predictONNX(framesBatch, session)
-              setPrediction(predictedLetter);
-              handleGestureSuccess(predictedLetter);
+              predictONNX(framesBatch, session, setPrediction, handleGestureSuccess)
             }
             framesBatch = [];
           }
@@ -109,7 +103,7 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
 
           //fade out dark backgroud
           if (currentDarkLayerOpacity > 0) {
-            currentDarkLayerOpacity -= 0.03;
+            currentDarkLayerOpacity -= 0.01;
             context.fillStyle = `rgba(0, 0, 0, ${currentDarkLayerOpacity})`;
             context.fillRect(0, 0, canvasElement.width, canvasElement.height);
           }
@@ -148,8 +142,8 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
     });
     camera.start();
     return () => {
-      // camera.stop();
-      // hands.close();
+      camera.stop();
+      hands.close();
       hands.onResults(null);
     };
   }, [session, modelConfig, setPrediction, handleGestureSuccess]);
