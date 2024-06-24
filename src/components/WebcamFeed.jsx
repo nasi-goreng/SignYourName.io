@@ -72,6 +72,7 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
         context.fillStyle = `rgba(0, 0, 0, ${currentDarkLayerOpacity})`; // Set the overlay color to dark grey with 50% opacity
         context.fillRect(0, 0, canvasElement.width, canvasElement.height); // Cover the entire canvas with the overlay
 
+        console.log("this is model config! ", modelConfig)
         //if hands detected ...
         if (results.multiHandLandmarks.length > 0) {
 
@@ -146,6 +147,11 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
       height: CANVAS_HEIGHT,
     });
     camera.start();
+    return () => {
+      // camera.stop();
+      // hands.close();
+      hands.onResults(null);
+    };
   }, [session, modelConfig, setPrediction, handleGestureSuccess]);
 
   return (
