@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { centerFrame, scaleFrame } from '../utils/tfjsUtils';
 import PropTypes from 'prop-types'; 
-import { drawLandmarks } from '@mediapipe/drawing_utils';
+// import { drawLandmarks } from '@mediapipe/drawing_utils';
 import { predictONNX } from '../utils/onnxUtils'
 import { predictTFJS } from '../utils/tfjsUtils'
 import { TFJS } from '../modelConfigs';
