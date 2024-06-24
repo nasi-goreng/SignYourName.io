@@ -1,38 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import WebcamFeed from './WebcamFeed';
 import { ReactComponent as CheckMark } from '../assets/checkmark.svg';
 import StaticCircle from './StaticCircle';
 import Rectangle from './Rectangle';
 import PropTypes from 'prop-types'; // ES6
 import { useOnnxSession } from '../utils/OnnxSessionContext';
-import { predictONNX } from '../utils/onnxUtils'
-import { modelConfigs, TFJS, ONNX } from '../modelConfigs';
+import { modelConfigs } from '../modelConfigs';
 
 const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, setSelectedModel, selectedModel }) => {
-  const [visiblity, setVisiblity] = useState(true);
-  useEffect(() => {
-    setVisiblity(true);
-    return () => {
-      setVisiblity(false);
-    };
-}, [location]);
 
   const [prediction, setPrediction] = useState('');
+  const modelConfig = modelConfigs[selectedModel];
   
   const session = useOnnxSession();
 
-  const modelConfig = modelConfigs[selectedModel];
-
-  const onFrameBatchFull = async (batch, session, modelConfig) => {
-    if(modelConfig.modelExportType === TFJS){
-      const predictedLetter = await predict(batch);
-      setPrediction(predictedLetter);
-    } else {
-      const predictedLetter = await predictONNX(batch, session)
-      setPrediction(predictedLetter);
-      handleGestureSuccess(predictedLetter);
-    }
-  };
 
   const handleNameChange = (event) => {
     setName(event.target.value.toUpperCase());
@@ -49,9 +30,20 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, se
     }
   };
 
+  const cachedHandleGestureSuccess = useCallback(handleGestureSuccess, [successfulGestures, name, setSuccessfulGestures])
+  
+    //animation related stuff
+    const [visiblity, setVisiblity] = useState(true);
+    useEffect(() => {
+      setVisiblity(true);
+      return () => {
+        setVisiblity(false);
+      };
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden">
-      <WebcamFeed session={session} onFrameBatchFull={onFrameBatchFull} className="mt-10 mb-10 w-[668px]" modelConfig={modelConfig}/>
+      <WebcamFeed session={session} handleGestureSuccess={cachedHandleGestureSuccess} setPrediction={setPrediction} className="mt-10 mb-10 w-[668px]" modelConfig={modelConfig}/>
       <div className="flex items-center space-x-4">
       <select
         className="w-[200px] h-[40px] bg-[#FFFFFF] border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none"

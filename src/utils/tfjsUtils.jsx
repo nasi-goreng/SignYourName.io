@@ -92,3 +92,20 @@ export const preProcess = (batch, modelConfig) => {
 
   return inputTensor;
 };
+
+export const predictTFJS = async (inputData) => {
+  if (!model) {
+    model = await loadModel(modelConfigs[selectedModel].path);
+  }
+
+  const processedBatch = preProcess(inputData, modelConfigs[selectedModel]);
+  const output = model.predict(processedBatch);
+  const probabilities = await output.array();
+  const probabilitiesInner = probabilities[0];
+  const sortedIndices = probabilitiesInner
+    .map((prob, index) => ({ prob, index }))
+    .sort((a, b) => b.prob - a.prob)
+    .slice(0, 3);
+
+  return letters[sortedIndices[0].index];
+};

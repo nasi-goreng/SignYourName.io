@@ -1,12 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { centerFrame, scaleFrame } from '../utils/tfjsUtils';
-import { model } from '@tensorflow/tfjs';
-import { useOnnxSession } from '../utils/OnnxSessionContext';
-// import { Hands, HAND_CONNECTIONS } from '@mediapipe/hands';
-// import { Camera } from '@mediapipe/camera_utils';
-
-//https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.drawingutils
-// import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+import PropTypes from 'prop-types'; 
+import { drawLandmarks } from '@mediapipe/drawing_utils';
+import { predictONNX } from '../utils/onnxUtils'
+import { predictTFJS } from '../utils/tfjsUtils'
+import { TFJS } from '../modelConfigs';
 
 const CANVAS_WIDTH = 1280;
 const CANVAS_HEIGHT = 720;
@@ -28,15 +26,12 @@ const targetDarkLayerOpacity = 0.6;
 
 let framesBatch = [];
 
-let logged = false;
-
-function WebcamFeed({ className, onFrameBatchFull, modelConfig }) {
+function WebcamFeed({ className, modelConfig, session, setPrediction, handleGestureSuccess }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
-  const session = useOnnxSession();
-
   useEffect(() => {
+
     const videoElement = videoRef.current;
     const canvasElement = canvasRef.current;
 
@@ -45,6 +40,7 @@ function WebcamFeed({ className, onFrameBatchFull, modelConfig }) {
 
     const context = canvasElement.getContext('2d');
 
+    // eslint-disable-next-line no-undef
     const hands = new Hands({
       locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
     });
@@ -56,7 +52,7 @@ function WebcamFeed({ className, onFrameBatchFull, modelConfig }) {
       minTrackingConfidence: 0.5,
     });
 
-    hands.onResults((results) => {
+    hands.onResults(async (results) => {
       /* 
         this is the interface for results 
         export interface Results {
@@ -81,7 +77,14 @@ function WebcamFeed({ className, onFrameBatchFull, modelConfig }) {
           if (framesBatch.length < modelConfig.frameBatchSize) {
             framesBatch.push(results.multiHandLandmarks[0]);
           } else {
-            onFrameBatchFull(framesBatch, session, modelConfig);
+            if(modelConfig.modelExportType === TFJS){
+              const predictedLetter = await predictTFJS(framesBatch);
+              setPrediction(predictedLetter);
+            } else {
+              const predictedLetter = await predictONNX(framesBatch, session)
+              setPrediction(predictedLetter);
+              handleGestureSuccess(predictedLetter);
+            }
             framesBatch = [];
           }
 
@@ -120,6 +123,7 @@ function WebcamFeed({ className, onFrameBatchFull, modelConfig }) {
         for (const landmarks of results.multiHandLandmarks) {
           const centeredLandmarks = scaleFrame(centerFrame(landmarks));
           //https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.drawingoptions#drawingoptions_interface
+          // eslint-disable-next-line no-undef
           drawConnectors(context, centeredLandmarks, HAND_CONNECTIONS, {
             color: getConnectionColor(currentConnectionOpacity),
             lineWidth: 3,
@@ -130,6 +134,7 @@ function WebcamFeed({ className, onFrameBatchFull, modelConfig }) {
       context.restore();
     });
 
+    // eslint-disable-next-line no-undef
     const camera = new Camera(videoElement, {
       onFrame: async () => {
         await hands.send({ image: videoElement });
@@ -138,7 +143,7 @@ function WebcamFeed({ className, onFrameBatchFull, modelConfig }) {
       height: CANVAS_HEIGHT,
     });
     camera.start();
-  }, [session]);
+  }, [session, modelConfig, setPrediction]);
 
   return (
     <div className={`${className} aspect-[16/9] relative`}>
@@ -150,6 +155,14 @@ function WebcamFeed({ className, onFrameBatchFull, modelConfig }) {
       />
     </div>
   );
+}
+
+WebcamFeed.propTypes = {
+  className: PropTypes.string.isRequired,
+  modelConfig: PropTypes.object.isRequired,
+  session: PropTypes.object,
+  setPrediction: PropTypes.func.isRequired,
+  handleGestureSuccess: PropTypes.func.isRequired,
 }
 
 export default WebcamFeed;
