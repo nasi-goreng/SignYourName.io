@@ -15,7 +15,7 @@ function App() {
   const [successfulGestures, setSuccessfulGestures] = useState([]);
 
   //todo - maybe this state can be lower, like just in the sign in page
-  const [selectedModel, setSelectedModel] = useState("model1");
+  const [selectedModel, setSelectedModel] = useState("model2");
   const location = useLocation();
 
   const modelConfig = modelConfigs[selectedModel]
