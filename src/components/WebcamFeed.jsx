@@ -26,6 +26,8 @@ const targetDarkLayerOpacity = 0.6;
 
 let framesBatch = [];
 
+let TFJSmodel = null;
+
 function WebcamFeed({ className, modelConfig, session, setPrediction, handleGestureSuccess }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -78,8 +80,9 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
             framesBatch.push(results.multiHandLandmarks[0]);
           } else {
             if(modelConfig.modelExportType === TFJS){
-              const predictedLetter = await predictTFJS(framesBatch);
+              const predictedLetter = await predictTFJS(framesBatch, TFJSmodel, modelConfig);
               setPrediction(predictedLetter);
+              handleGestureSuccess(predictedLetter);
             } else {
               const predictedLetter = await predictONNX(framesBatch, session)
               setPrediction(predictedLetter);
@@ -143,7 +146,7 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
       height: CANVAS_HEIGHT,
     });
     camera.start();
-  }, [session, modelConfig, setPrediction]);
+  }, [session, modelConfig, setPrediction, handleGestureSuccess]);
 
   return (
     <div className={`${className} aspect-[16/9] relative`}>

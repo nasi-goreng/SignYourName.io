@@ -5,9 +5,7 @@ import * as ort from 'onnxruntime-web';
 const OnnxSessionContext = createContext(null);
 
 export const useOnnxSession = () => {
-  
-  const c = useContext(OnnxSessionContext);
-  return c
+  return useContext(OnnxSessionContext);
 };
 
 export const OnnxSessionProvider = ({ children, modelConfig }) => {

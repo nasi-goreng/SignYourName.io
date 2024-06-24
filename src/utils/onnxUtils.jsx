@@ -12,7 +12,7 @@ const transformFrames = (frames) => {
     return new Float32Array(flattenedFrames);
 };
 
-const indexToLetter = (index) => {
+export const indexToLetter = (index) => {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   return letters[index] || '';
 };

@@ -93,12 +93,13 @@ export const preProcess = (batch, modelConfig) => {
   return inputTensor;
 };
 
-export const predictTFJS = async (inputData) => {
+
+export const predictTFJS = async (inputData, model, modelConfig) => {
   if (!model) {
-    model = await loadModel(modelConfigs[selectedModel].path);
+    model = await loadModel(modelConfig.path);
   }
 
-  const processedBatch = preProcess(inputData, modelConfigs[selectedModel]);
+  const processedBatch = preProcess(inputData, modelConfig);
   const output = model.predict(processedBatch);
   const probabilities = await output.array();
   const probabilitiesInner = probabilities[0];
