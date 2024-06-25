@@ -1,45 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import WebcamFeed from './WebcamFeed';
 import { ReactComponent as CheckMark } from '../assets/checkmark.svg';
-import { loadModel, preProcess, letters } from '../utils/modelUtils';
 import StaticCircle from './StaticCircle';
 import Rectangle from './Rectangle';
-import { useLocation } from 'react-router-dom';
+import PropTypes from 'prop-types'; // ES6
+import { useOnnxSession } from '../utils/OnnxSessionContext';
+import { modelConfigs } from '../modelConfigs';
 
-let model = null;
-
-const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) => {
-  const [visiblity, setVisiblity] = useState(true);
-  useEffect(() => {
-    setVisiblity(true);
-    return () => {
-      setVisiblity(false);
-    };
-  }, [location]);
+const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, setSelectedModel, selectedModel }) => {
 
   const [prediction, setPrediction] = useState('');
+  const modelConfig = modelConfigs[selectedModel];
+  
+  const session = useOnnxSession();
 
-  const predict = async (inputData) => {
-    if (!model) {
-      model = await loadModel();
-    }
-
-    const processedBatch = preProcess(inputData);
-    const output = model.predict(processedBatch);
-    const probabilities = await output.array();
-    const probabilitiesInner = probabilities[0];
-    const sortedIndices = probabilitiesInner
-      .map((prob, index) => ({ prob, index }))
-      .sort((a, b) => b.prob - a.prob)
-      .slice(0, 3);
-
-    const predictedLetter = letters[sortedIndices[0].index];
-    setPrediction(predictedLetter);
-  };
-
-  const onFrameBatchFull = async (batch) => {
-    predict(batch);
-  };
 
   const handleNameChange = (event) => {
     setName(event.target.value.toUpperCase());
@@ -56,9 +30,32 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) 
     }
   };
 
+  const cachedHandleGestureSuccess = useCallback(handleGestureSuccess, [successfulGestures, name, setSuccessfulGestures])
+  
+    //animation related stuff
+    const [visiblity, setVisiblity] = useState(true);
+    useEffect(() => {
+      setVisiblity(true);
+      return () => {
+        setVisiblity(false);
+      };
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden">
-      <WebcamFeed onFrameBatchFull={onFrameBatchFull} className="mt-10 mb-10 w-[668px]" />
+      <WebcamFeed session={session} handleGestureSuccess={cachedHandleGestureSuccess} setPrediction={setPrediction} className="mt-10 mb-10 w-[668px]" modelConfig={modelConfig}/>
+      <div className="flex items-center space-x-4">
+      <select
+        className="w-[200px] h-[40px] bg-[#FFFFFF] border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none"
+        onChange={(e) => setSelectedModel(e.target.value)}
+        value={selectedModel}
+      >
+        <option value="model1">Single Layer LSTM</option>
+        <option value="model2">Jesus Model</option>
+        <option value="model3">Model 3</option>
+      </select>
+        
+      </div>
       <div className="flex items-center space-x-4">
         <input
           type="text"
@@ -97,5 +94,15 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures }) 
     </div>
   );
 };
+
+SignPage.propTypes = {
+  name: PropTypes.string.isRequired,
+  setName: PropTypes.func.isRequired,
+  successfulGestures: PropTypes.array.isRequired,
+  setSuccessfulGestures: PropTypes.func.isRequired,
+  setSelectedModel: PropTypes.func.isRequired, 
+  selectedModel: PropTypes.string.isRequired,
+
+}
 
 export default SignPage;
