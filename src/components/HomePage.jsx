@@ -48,7 +48,7 @@ const HomePage = () => {
               onLetterDeleted={handleLetterDeleted}
             />
           </div>
-          <p className="w-full px-4 py-2 mt-4 bg-[#FFFFFF] border-[3px] border-[#CDCDCD] rounded-[24px] font-normal text-xl shadow-md">
+          <p className="w-full px-4 py-2 mt-4 bg-[#FFFFFF] border-[3px] border-[#CDCDCD] rounded-[24px] font-normal text-xl shadow-md dm-mono">
             Learn how to introduce yourself in ASL!
             <br />
             Use Machine Learning to sign your name in seconds.
