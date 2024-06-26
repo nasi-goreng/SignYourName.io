@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
+
+const TIME_TO_HOLD_FULLY_SPELLED_WORD = 1000;
+const DELAY_BEFORE_DRAWING_NEXT_LETTER = 700;
+const DELAY_BEFORE_DELETING_NEXT_LETTER = 140;
+
+const HACKY_OFFSET_TO_DELAY_HAND_DELETE = 250;
+
 const TypingAnimation = ({ words, onLetterTyped, onLetterDeleted }) => {
   const [index, setIndex] = useState(0);
   const [letterIndex, setLetterIndex] = useState(0);
@@ -26,19 +33,21 @@ const TypingAnimation = ({ words, onLetterTyped, onLetterDeleted }) => {
             onLetterTyped(words[index][letterIndex - 1]);
           }
           setLetterIndex(letterIndex + 1);
-        }, 800);
+        }, DELAY_BEFORE_DRAWING_NEXT_LETTER);
       } else if (isDeleting && letterIndex >= 0) {
         setTimeout(() => {
           setDisplayText(words[index].substring(0, letterIndex));
           if (letterIndex > 0) {
-            onLetterDeleted();
+            setTimeout(() => {
+              onLetterDeleted();
+            }, HACKY_OFFSET_TO_DELAY_HAND_DELETE);
           }
           setLetterIndex(letterIndex - 1);
-        }, 200);
+        }, DELAY_BEFORE_DELETING_NEXT_LETTER);
       } else if (!isDeleting) {
         setTimeout(() => {
           setIsDeleting(true);
-        }, 1000);
+        }, TIME_TO_HOLD_FULLY_SPELLED_WORD);
       } else {
         setIsDeleting(false);
         setLetterIndex(0);
