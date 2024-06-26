@@ -6,3 +6,32 @@
 .bg-cream {
   background-color: #FDF6EE;
 }
+
+.dm-mono {
+  font-family: "DM Mono", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.be-vietnam {
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.purple-hover {
+  &:hover {
+    color: #8953CD;
+  }
+}
+
+.yellow-hover {
+  &:hover {
+    color: #FFE08F
+  }
+}
+
+.yellow-a {
+  color: #FFE08F;
+  text-decoration: underline;
+}

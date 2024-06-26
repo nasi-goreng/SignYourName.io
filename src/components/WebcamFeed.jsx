@@ -9,14 +9,18 @@ import { TFJS } from '../modelConfigs';
 const CANVAS_WIDTH = 1280;
 const CANVAS_HEIGHT = 720;
 
+const getBackgroundColor = (opacity) => {
+  return `rgba(90, 44, 149, ${opacity})`;
+};
+
 const getLandmarkColor = (opacity) => {
-  return `rgba(255, 0, 0, ${opacity})`;
+  return `rgba(255, 224, 143, ${opacity})`;
 };
 let currentLandmarkOpacity = 0;
 const targetLandmarkOpacity = 1;
 
 const getConnectionColor = (opacity) => {
-  return `rgba(0, 255, 0, ${opacity})`;
+  return `rgba(156, 194, 194, ${opacity})`;
 };
 let currentConnectionOpacity = 0;
 const targetConnectionOpacity = 1;
@@ -69,7 +73,7 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
       context.clearRect(0, 0, canvasElement.width, canvasElement.height);
       context.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
       if (results.multiHandLandmarks) {
-        context.fillStyle = `rgba(0, 0, 0, ${currentDarkLayerOpacity})`; // Set the overlay color to dark grey with 50% opacity
+        context.fillStyle = getBackgroundColor(currentDarkLayerOpacity); // Set the overlay color to dark grey with 50% opacity
         context.fillRect(0, 0, canvasElement.width, canvasElement.height); // Cover the entire canvas with the overlay
         //if hands detected ...
         if (results.multiHandLandmarks.length > 0) {
@@ -104,7 +108,7 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
           //fade out dark backgroud
           if (currentDarkLayerOpacity > 0) {
             currentDarkLayerOpacity -= 0.01;
-            context.fillStyle = `rgba(0, 0, 0, ${currentDarkLayerOpacity})`;
+            context.fillStyle = getBackgroundColor(currentDarkLayerOpacity);
             context.fillRect(0, 0, canvasElement.width, canvasElement.height);
           }
 
@@ -124,9 +128,9 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
           // eslint-disable-next-line no-undef
           drawConnectors(context, centeredLandmarks, HAND_CONNECTIONS, {
             color: getConnectionColor(currentConnectionOpacity),
-            lineWidth: 3,
+            lineWidth: 7,
           });
-          drawLandmarks(context, centeredLandmarks, { color: getLandmarkColor(currentLandmarkOpacity), radius: 6.3 });
+          drawLandmarks(context, centeredLandmarks, { color: getLandmarkColor(currentLandmarkOpacity), radius: 8 });
         }
       }
       context.restore();

@@ -56,7 +56,7 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, se
       </select>
         
       </div>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 dm-mono">
         <input
           type="text"
           value={name}
@@ -68,7 +68,7 @@ const SignPage = ({ name, setName, successfulGestures, setSuccessfulGestures, se
           onClick={() => handleGestureSuccess('A')}
           className="w-[118px] h-[40px] border-2 border-[#CDCDCD] rounded-2xl focus:outline-none"
         >
-          <span className="w-[37px] h-[18px] text-16 font-medium leading-17.6 text-left">reset</span>
+          <span className="w-[37px] h-[18px] text-16 font-medium leading-17.6 text-left text-[#6C6C6C]">reset</span>
         </button>
       </div>
       <div>{prediction}</div>
