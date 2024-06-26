@@ -38,7 +38,7 @@ const TypingAnimation = ({ words, onLetterTyped, onLetterDeleted }) => {
       } else if (!isDeleting) {
         setTimeout(() => {
           setIsDeleting(true);
-        }, 1500);
+        }, 1000);
       } else {
         setIsDeleting(false);
         setLetterIndex(0);

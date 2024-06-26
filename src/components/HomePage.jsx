@@ -37,9 +37,9 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex items-center justify-center relative overflow-hidden">
-      <div className="flex flex-row w-full h-full z-20">
+      <div className="flex flex-row items-center justify-center w-auto max-w-screen-lg z-20">
         {/* Left Side */}
-        <div className="w-1/2 flex flex-col items-start justify-center text-left p-8">
+        <div className="w-[441px] flex flex-col items-start justify-center text-left p-8">
           <h1 className="text-[80px] font-[450] leading-[80px] text-[#2B2B2B] mb-4">Hello, my name is...</h1>
           <div className="relative flex items-center mb-4">
             <TypingAnimation
@@ -58,7 +58,7 @@ const HomePage = () => {
           </p>
         </div>
         {/* Right Side */}
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center ml-8">
           <HandAnimation currentLetter={currentLetter} />
         </div>
       </div>

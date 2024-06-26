@@ -11,7 +11,11 @@ const HandAnimation = ({ currentLetter }) => {
     }
   }, [currentLetter]);
 
-  return currentImage ? <img src={currentImage} alt="letter" className="w-[392px] h-[538px] ml-4" /> : null;
+  return (
+    <div className="w-[392px] h-[538px] ml-4 flex items-center justify-center">
+      {currentImage ? <img src={currentImage} alt="letter" className="w-full h-full" /> : null}
+    </div>
+  );
 };
 
 export default HandAnimation;
