@@ -56,6 +56,7 @@ const SignPage = () => {
           </select>
         </div>      
         <WebcamFeed
+          prediction={prediction}
           handleGestureSuccess={cachedHandleGestureSuccess}
           setPrediction={setPrediction}
           className="mb-6 w-[668px]"

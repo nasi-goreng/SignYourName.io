@@ -21,6 +21,18 @@ const targetDarkLayerOpacity = 0.6;
 let framesBatch = [];
 let TFJSmodel = null;
 
+const drawPredictionAboveRender = ({letter, fontSize, fontColor, centeredLandmarks, canvasElement, context}) => {
+  // const fontSize = 45;
+  // const fontColor = getLandmarkColor(currentLandmarkOpacity);
+  const x = canvasElement.width / 2;
+  const tallestLandmark = centeredLandmarks.reduce((prev, current) => (prev.y < current.y ? prev : current));
+  const y = tallestLandmark.y * canvasElement.height - 40; // Adjust the position above the tallest landmark
+  context.font = `${fontSize}px DM mono`;
+  context.fillStyle = fontColor;
+  context.fillText(letter, x, y);  
+
+}
+
 function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSuccess }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -105,6 +117,9 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
 
         for (const landmarks of results.multiHandLandmarks) {
           const centeredLandmarks = scaleFrame(centerFrame(landmarks));
+
+          drawPredictionAboveRender({letter: "A", fontSize: 45, fontColor: getLandmarkColor(currentLandmarkOpacity), centeredLandmarks, canvasElement, context})
+          
           drawConnectors(context, centeredLandmarks, HAND_CONNECTIONS, {
             color: getConnectionColor(currentConnectionOpacity),
             lineWidth: 7,
