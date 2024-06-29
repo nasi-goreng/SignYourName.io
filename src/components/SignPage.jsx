@@ -11,10 +11,13 @@ const SignPage = () => {
   const [selectedModel, setSelectedModel] = useState('model2');
   const modelConfig = useMemo(() => modelConfigs[selectedModel], [selectedModel]);
   const [prediction, setPrediction] = useState('');
+  const [finishedSpellingName, setFinishedSpellingName] = useState(false);
+  const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
 
   const handleNameChange = (event) => {
     setName(event.target.value.toUpperCase());
     setSuccessfulGestures(new Array(event.target.value.length).fill(false));
+    setDisplaySuccessMessage(false);
   };
 
   const handleReset = () => {
@@ -29,8 +32,12 @@ const SignPage = () => {
       const newSuccessfulGestures = [...successfulGestures];
       newSuccessfulGestures[index] = true;
       setSuccessfulGestures(newSuccessfulGestures);
+      if (newSuccessfulGestures.every((match) => !!match)) {
+        setFinishedSpellingName(true);
+      }
     }
   };
+
 
   useEffect(() => {
     console.log(prediction)
@@ -90,7 +97,7 @@ const SignPage = () => {
           </button>
         </div>
       </div>
-      <SignImages name={name} successfulGestures={successfulGestures} />
+      <SignImages displaySuccessMessage={displaySuccessMessage} setDisplaySuccessMessage={setDisplaySuccessMessage} name={name} resetName={() => setName("")} successfulGestures={successfulGestures} finishedSpellingName={finishedSpellingName} setFinishedSpellingName={setFinishedSpellingName}/>
       <Rectangle className={`absolute h-[155px] top-[-7%] left-[89%] rotate-[70deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[64px] top-[45%] left-[-1%] rotate-[30deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[450px] top-[63%] left-[95%] rotate-[57deg]`} isVisible={visiblity} />
