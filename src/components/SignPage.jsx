@@ -17,6 +17,11 @@ const SignPage = () => {
     setSuccessfulGestures(new Array(event.target.value.length).fill(false));
   };
 
+  const handleReset = () => {
+    setName('');
+    setSuccessfulGestures([]);
+  };
+
   const handleGestureSuccess = (gesture) => {
     const index = successfulGestures.indexOf(false);
     const nextLetter = name[index];
@@ -26,6 +31,10 @@ const SignPage = () => {
       setSuccessfulGestures(newSuccessfulGestures);
     }
   };
+
+  useEffect(() => {
+    handleGestureSuccess(prediction);
+  }, [prediction]);
 
   const cachedHandleGestureSuccess = useCallback(handleGestureSuccess, [
     successfulGestures,
@@ -69,13 +78,12 @@ const SignPage = () => {
           className="w-[495px] h-[40px] bg-[#FFFFFF] py-3 px-6 gap-2.5 border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none"
         />
         <button
-          onClick={() => handleGestureSuccess('A')}
+          onClick={() => handleReset()}
           className="w-[118px] h-[40px] border-2 border-[#CDCDCD] rounded-2xl focus:outline-none"
         >
           <span className="w-[37px] h-[18px] text-16 font-medium leading-17.6 text-left text-[#6C6C6C]">reset</span>
         </button>
       </div>
-      <div>{prediction}</div>
       <div id="sign-images" className="flex flex-wrap justify-center">
         {name.split('').map((letter, index) => (
           <div key={index} className="relative m-2">

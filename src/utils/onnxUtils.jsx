@@ -41,10 +41,8 @@ export const predictONNX = async (handLandmarks, setPrediction, handleGestureSuc
     try {
       let inputTensor;
       if (modelConfig.frameBatchSize === 30) {
-        console.log('Jesus')
         inputTensor = transformFrames(handLandmarks);
       } else if (modelConfig.frameBatchSize === 60) {
-        console.log('Riko')
         inputTensor = preprocess(handLandmarks);
       } else {
         throw new Error('Invalid number of hand landmarks');
