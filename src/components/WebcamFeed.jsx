@@ -53,7 +53,6 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
       context.clearRect(0, 0, canvasElement.width, canvasElement.height);
       context.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
       if (results.multiHandLandmarks.length) {
-        console.log(results.multiHandLandmarks);
         context.fillStyle = getBackgroundColor(currentDarkLayerOpacity);
         context.fillRect(0, 0, canvasElement.width, canvasElement.height);
         if (results.multiHandLandmarks.length > 0) {

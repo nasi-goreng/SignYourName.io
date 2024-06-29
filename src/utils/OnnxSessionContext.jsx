@@ -9,8 +9,6 @@ export const useOnnxSession = () => {
 
 export const OnnxSessionProvider = ({ children, modelConfig }) => {
   const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [error, setError] = useState(null); // Add error state
 
   useEffect(() => {
     const loadModel = async () => {
@@ -19,10 +17,7 @@ export const OnnxSessionProvider = ({ children, modelConfig }) => {
         setSession(session);
       } catch (err) {
         console.error('Failed to load ONNX model:', err);
-        setError('Failed to load ONNX model');
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
 
     loadModel();

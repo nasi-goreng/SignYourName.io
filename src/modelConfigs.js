@@ -23,7 +23,7 @@ export const modelConfigs = {
         frameBatchSize: 60,
         modelExportType: ONNX,
         path: "/model_arg.onnx",
-        stepSize: 20,
+        stepSize: 10,
         normalization: []
     }    
 }
