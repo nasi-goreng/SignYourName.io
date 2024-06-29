@@ -71,30 +71,27 @@ const SignPage = () => {
           <option value="model3">{modelConfigs.model3.name}</option>
         </select>
       </div>
-      <div className="flex items-center space-x-4 dm-mono">
-        <input
-          type="text"
-          value={name}
-          placeholder="Your name goes here"
-          onChange={handleNameChange}
-          className="w-[495px] h-[40px] bg-[#FFFFFF] py-3 px-6 gap-2.5 border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none"
-        />
-        <button
-          onClick={() => handleReset()}
-          className="w-[118px] h-[40px] border-2 border-[#CDCDCD] rounded-2xl focus:outline-none hover:border-[#8953CD]"
-        >
-          <span className="w-[37px] h-[18px] text-16 font-medium leading-17.6 text-left text-[#6C6C6C]">reset</span>
-        </button>
+      <div className="flex flex-col items-center dm-mono">
+        <div className="w-full max-w-[613px] flex justify-start mb-2">
+          <p className="text-left font-medium text-sm">Type your name</p>
+        </div>
+        <div className="w-full max-w-[613px] flex flex-row justify-center">
+          <input
+            type="text"
+            value={name}
+            placeholder="Your name goes here"
+            onChange={handleNameChange}
+            className="w-[495px] h-[40px] bg-[#FFFFFF] py-3 px-6 gap-2.5 border-2 border-[#CDCDCD] rounded-lg text-gray-600 focus:outline-none"
+          />
+          <button
+            onClick={handleReset}
+            className="w-[118px] h-[40px] border-2 border-[#CDCDCD] rounded-2xl focus:outline-none hover:border-[#8953CD]"
+          >
+            <span className="w-[37px] h-[18px] text-16 font-medium leading-17.6 text-left text-[#6C6C6C]">reset</span>
+          </button>
+        </div>
       </div>
       <SignImages name={name} successfulGestures={successfulGestures} />
-      {/* <div id="sign-images" className="flex flex-wrap justify-center">
-        {name.split('').map((letter, index) => (
-          <div key={index} className="relative m-2">
-            <img key={index} src={`/images/examples/${letter}.jpg`} alt={letter} className="w-full h-full" />
-            {successfulGestures[index] && <CheckMark className="absolute inset-0 w-full h-full text-green-500" />}
-          </div>
-        ))}
-      </div> */}
       <Rectangle className={`absolute h-[155px] top-[-7%] left-[89%] rotate-[70deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[64px] top-[45%] left-[-1%] rotate-[30deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[450px] top-[63%] left-[95%] rotate-[57deg]`} isVisible={visiblity} />
