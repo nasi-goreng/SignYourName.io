@@ -52,35 +52,36 @@ const SignPage = () => {
   }, [location]);
 
   return (
-    <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden">
-      <WebcamFeed
-        handleGestureSuccess={cachedHandleGestureSuccess}
-        setPrediction={setPrediction}
-        className="mt-10 mb-10 w-[668px]"
-        modelConfig={modelConfig}
-      />
-      <div className="flex items-center space-x-4">
-        <select
-          className="w-[200px] h-[40px] bg-[#FFFFFF] border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none"
-          onChange={(e) => setSelectedModel(e.target.value)}
-          value={selectedModel}
-        >
-          <option value="model1">{modelConfigs.model1.name}</option>
-          <option value="model2">{modelConfigs.model2.name}</option>
-          <option value="model3">{modelConfigs.model3.name}</option>
-        </select>
+    <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden ">
+      <div>
+        <div className="flex items-center space-x-4 justify-end mt-10">
+          <select
+            className="w-[200px] h-[40px] bg-[#FEF5F1] rounded-md text-gray-600 focus:outline-none border-0 text-right"
+            onChange={(e) => setSelectedModel(e.target.value)}
+            value={selectedModel}
+          >
+            <option value="model1">{modelConfigs.model1.name}</option>
+            <option value="model2">{modelConfigs.model2.name}</option>
+            <option value="model3">{modelConfigs.model3.name}</option>
+          </select>
+        </div>      
+        <WebcamFeed
+          prediction={prediction}
+          handleGestureSuccess={cachedHandleGestureSuccess}
+          setPrediction={setPrediction}
+          className="mb-6 w-[668px]"
+          modelConfig={modelConfig}
+        />
       </div>
-      <div className="flex flex-col items-center dm-mono">
-        <div className="w-full max-w-[613px] flex justify-start mb-2">
-          <p className="text-left font-medium text-sm">Type your name</p>
-        </div>
-        <div className="w-full max-w-[613px] flex flex-row justify-center">
+      <div>
+      <div className="dm-mono text-lg mb-2">Type your name</div>
+        <div className="flex items-center space-x-4 dm-mono">
           <input
             type="text"
             value={name}
             placeholder="Your name goes here"
             onChange={handleNameChange}
-            className="w-[495px] h-[40px] bg-[#FFFFFF] py-3 px-6 gap-2.5 border-2 border-[#CDCDCD] rounded-lg text-gray-600 focus:outline-none mr-2"
+            className="w-[495px] h-[40px] bg-[#FFFFFF] py-3 px-6 gap-2.5 border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none font-thin"
           />
           <button
             onClick={handleReset}

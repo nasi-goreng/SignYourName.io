@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { centerFrame, scaleFrame } from '../utils/tfjsUtils';
 import PropTypes from 'prop-types';
 import { predictONNX } from '../utils/onnxUtils';
@@ -21,13 +21,24 @@ const targetDarkLayerOpacity = 0.6;
 let framesBatch = [];
 let TFJSmodel = null;
 
-function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSuccess }) {
+
+const getHighestLandmark = (landmarks, setHighestLandmark) => {
+    const highestLandmark = landmarks.reduce((prev, current) => (prev.y < current.y ? prev : current));
+    setHighestLandmark(highestLandmark);
+}
+
+
+
+function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSuccess, prediction }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const handsRef = useRef(null);
   const cameraRef = useRef(null);
   const sessionRef = useRef(null);
   let canvasElement;
+
+  const [highestLandmark, setHighestLandmark] = useState({y: .3});
+  const [landMarkColor, setLandMarkColor] = useState('transparent');
 
   useEffect(() => {
     if (modelConfig.modelExportType === ONNX) {
@@ -58,6 +69,7 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
     });
 
     handsRef.current.onResults(async (results) => {
+      console.log("on results !!")
       context.save();
       context.clearRect(0, 0, canvasElement.width, canvasElement.height);
       context.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
@@ -85,28 +97,34 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
           if (currentConnectionOpacity < targetConnectionOpacity) {
             currentConnectionOpacity += 0.03;
           }
-        } else {
-          if (currentDarkLayerOpacity > 0) {
-            currentDarkLayerOpacity -= 0.01;
-            context.fillStyle = getBackgroundColor(currentDarkLayerOpacity);
-            context.fillRect(0, 0, canvasElement.width, canvasElement.height);
-          }
-          if (currentLandmarkOpacity > 0) {
-            currentLandmarkOpacity = 0;
-          }
-          if (currentConnectionOpacity > 0) {
-            currentConnectionOpacity = 0;
-          }
-        }
+        } 
 
         for (const landmarks of results.multiHandLandmarks) {
           const centeredLandmarks = scaleFrame(centerFrame(landmarks));
+
+          getHighestLandmark(centeredLandmarks, setHighestLandmark);
+          setLandMarkColor(getLandmarkColor(currentLandmarkOpacity))
+          
           drawConnectors(context, centeredLandmarks, HAND_CONNECTIONS, {
             color: getConnectionColor(currentConnectionOpacity),
             lineWidth: 7,
           });
           drawLandmarks(context, centeredLandmarks, { color: getLandmarkColor(currentLandmarkOpacity), radius: 8 });
         }
+      } else {
+        if (currentDarkLayerOpacity > 0) {
+          currentDarkLayerOpacity -= 0.02;
+          context.fillStyle = getBackgroundColor(currentDarkLayerOpacity);
+          context.fillRect(0, 0, canvasElement.width, canvasElement.height);
+        }
+        if (currentLandmarkOpacity > 0) {
+          currentLandmarkOpacity = 0;
+        }
+        if (currentConnectionOpacity > 0) {
+          currentConnectionOpacity = 0;
+        }
+        framesBatch = [];
+        setLandMarkColor('transparent');
       }
       context.restore();
     });
@@ -146,6 +164,22 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
   return (
     <div className={`${className} aspect-[16/9] relative`}>
       <video ref={videoRef} className="w-full h-full object-cover rounded-2xl" style={{ transform: 'scaleX(-1)' }} />
+      <div
+        style={{
+          fontFamily: "DM Mono",
+          position: 'absolute',
+          top: `${highestLandmark.y * 100 - 15}%`,
+          left: '50%',
+          transform: `translate(-50%, -${highestLandmark.y * 100 - 15}%)`,
+          fontSize: '25px',
+          color: landMarkColor,
+          pointerEvents: 'none',
+          zIndex: 1000,
+          transition: 'color 0.25s ease-in',
+        }}
+      >
+        {prediction}
+      </div>
       <canvas
         ref={canvasRef}
         className="w-full h-full absolute top-0 left-0 rounded-2xl"
