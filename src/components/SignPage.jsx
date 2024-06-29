@@ -4,6 +4,7 @@ import { ReactComponent as CheckMark } from '../assets/checkmark.svg';
 import StaticCircle from './StaticCircle';
 import Rectangle from './Rectangle';
 import { modelConfigs } from '../modelConfigs';
+import SignImages from './SignImages';
 
 const SignPage = () => {
   const [name, setName] = useState('');
@@ -33,6 +34,7 @@ const SignPage = () => {
   };
 
   useEffect(() => {
+    console.log(prediction)
     handleGestureSuccess(prediction);
   }, [prediction]);
 
@@ -84,14 +86,15 @@ const SignPage = () => {
           <span className="w-[37px] h-[18px] text-16 font-medium leading-17.6 text-left text-[#6C6C6C]">reset</span>
         </button>
       </div>
-      <div id="sign-images" className="flex flex-wrap justify-center">
+      <SignImages name={name} successfulGestures={successfulGestures} />
+      {/* <div id="sign-images" className="flex flex-wrap justify-center">
         {name.split('').map((letter, index) => (
           <div key={index} className="relative m-2">
             <img key={index} src={`/images/examples/${letter}.jpg`} alt={letter} className="w-full h-full" />
             {successfulGestures[index] && <CheckMark className="absolute inset-0 w-full h-full text-green-500" />}
           </div>
         ))}
-      </div>
+      </div> */}
       <Rectangle className={`absolute h-[155px] top-[-7%] left-[89%] rotate-[70deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[64px] top-[45%] left-[-1%] rotate-[30deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[450px] top-[63%] left-[95%] rotate-[57deg]`} isVisible={visiblity} />
