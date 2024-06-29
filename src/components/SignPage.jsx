@@ -44,7 +44,7 @@ const SignPage = () => {
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden ">
       <div>
-        <div className="flex items-center space-x-4 justify-end">
+        <div className="flex items-center space-x-4 justify-end mt-10">
           <select
             className="w-[200px] h-[40px] bg-[#FEF5F1] border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none border-0 text-right"
             onChange={(e) => setSelectedModel(e.target.value)}
@@ -58,25 +58,27 @@ const SignPage = () => {
         <WebcamFeed
           handleGestureSuccess={cachedHandleGestureSuccess}
           setPrediction={setPrediction}
-          className="mt-0 mb-10 w-[668px]"
+          className="mb-6 w-[668px]"
           modelConfig={modelConfig}
         />
       </div>
-      
-      <div className="flex items-center space-x-4 dm-mono">
-        <input
-          type="text"
-          value={name}
-          placeholder="Your name goes here"
-          onChange={handleNameChange}
-          className="w-[495px] h-[40px] bg-[#FFFFFF] py-3 px-6 gap-2.5 border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none"
-        />
-        <button
-          onClick={() => handleGestureSuccess('A')}
-          className="w-[118px] h-[40px] border-2 border-[#CDCDCD] rounded-2xl focus:outline-none"
-        >
-          <span className="w-[37px] h-[18px] text-16 font-medium leading-17.6 text-left text-[#6C6C6C]">reset</span>
-        </button>
+      <div>
+      <div className="dm-mono text-lg mb-2">Type your name</div>
+        <div className="flex items-center space-x-4 dm-mono">
+          <input
+            type="text"
+            value={name}
+            placeholder="Your name goes here"
+            onChange={handleNameChange}
+            className="w-[495px] h-[40px] bg-[#FFFFFF] py-3 px-6 gap-2.5 border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none font-thin"
+          />
+          <button
+            onClick={() => handleGestureSuccess('A')}
+            className="w-[118px] h-[40px] border-2 border-[#CDCDCD] rounded-2xl focus:outline-none"
+          >
+            <span className="w-[37px] h-[18px] text-16 font-medium leading-17.6 text-left text-[#6C6C6C]">reset</span>
+          </button>
+      </div>
       </div>
       <div>{prediction}</div>
       <div id="sign-images" className="flex flex-wrap justify-center">
