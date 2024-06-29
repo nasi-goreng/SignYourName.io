@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import WebcamFeed from './WebcamFeed';
-import { ReactComponent as CheckMark } from '../assets/checkmark.svg';
 import StaticCircle from './StaticCircle';
 import Rectangle from './Rectangle';
 import { modelConfigs } from '../modelConfigs';
