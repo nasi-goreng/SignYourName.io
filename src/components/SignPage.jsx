@@ -81,7 +81,6 @@ const SignPage = () => {
           </button>
       </div>
       </div>
-      <div>{prediction}</div>
       <div id="sign-images" className="flex flex-wrap justify-center">
         {name.split('').map((letter, index) => (
           <div key={index} className="relative m-2">
