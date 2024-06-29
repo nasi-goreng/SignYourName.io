@@ -1,9 +1,10 @@
 import React from 'react';
 
 const SignImages = ({ name, successfulGestures }) => {
+  const hasImages = name.length > 0;
   return (
     <div id="sign-images" className="flex flex-col items-center mt-6">
-      <p className="h-[21px] dm-mono font-medium text-lg mb-5">Copy the gestures</p>
+      {hasImages && <p className="h-[21px] dm-mono font-medium text-lg mb-5">Copy the gestures</p>}
       <div className="flex flex-row justify-center flex-wrap">
         {name.split('').map((letter, index) => (
           <div key={index} className="relative m-2">
