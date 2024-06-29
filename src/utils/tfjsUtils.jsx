@@ -99,6 +99,7 @@ export const predictTFJS = async (inputData, modelConfig, setPrediction, handleG
   if (!model) {
     model = await loadModel(modelConfig.path);
   }
+  console.log('Nick')
   const processedBatch = preProcess(inputData, modelConfig);
   const output = model.predict(processedBatch);
   const probabilities = await output.array();
