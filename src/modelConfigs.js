@@ -11,11 +11,19 @@ export const modelConfigs = {
         normalization: ["center", "scale"]
     },
     model2: {
-        name: "Jesus Model",
+        name: "MultiLSTM",
         frameBatchSize: 30,
         modelExportType: ONNX,
         path: "/model_full.onnx",
         stepSize: 10,
+        normalization: []
+    },
+    model3: {
+        name: "CNN-GRU",
+        frameBatchSize: 60,
+        modelExportType: ONNX,
+        path: "/model_arg.onnx",
+        stepSize: 20,
         normalization: []
     }    
 }
