@@ -81,7 +81,7 @@ const SignPage = () => {
             value={name}
             placeholder="Your name goes here"
             onChange={handleNameChange}
-            className="w-[495px] h-[40px] bg-[#FFFFFF] py-3 px-6 gap-2.5 border-2 border-[#CDCDCD] rounded-lg text-gray-600 focus:outline-none"
+            className="w-[495px] h-[40px] bg-[#FFFFFF] py-3 px-6 gap-2.5 border-2 border-[#CDCDCD] rounded-lg text-gray-600 focus:outline-none mr-2"
           />
           <button
             onClick={handleReset}
