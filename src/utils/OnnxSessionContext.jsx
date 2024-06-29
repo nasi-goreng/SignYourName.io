@@ -1,6 +1,6 @@
-// OnnxSessionContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as ort from 'onnxruntime-web';
+import { ONNX } from '../modelConfigs';
 
 const OnnxSessionContext = createContext(null);
 
@@ -12,22 +12,20 @@ export const OnnxSessionProvider = ({ children, modelConfig }) => {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    // Load the ONNX model when the component mounts
-    const loadModel = async () => {
-      try {
-        const session = await ort.InferenceSession.create(modelConfig.path);
-        setSession(session);
-      } catch (err) {
-        console.error('Failed to load ONNX model:', err);
-      }
-    };
+    if (modelConfig.modelExportType === ONNX) {
+      const loadModel = async () => {
+        try {
+          const session = await ort.InferenceSession.create(modelConfig.path);
+          setSession(session);
+        } catch (err) {
+          console.error('Failed to load ONNX model:', err);
+        }
+      };
 
-    loadModel();
-  }, []);
+      loadModel();
+    }
+  }, [modelConfig.path]);
 
-  return (
-    <OnnxSessionContext.Provider value={session}>
-      {children}
-    </OnnxSessionContext.Provider>
-  );
+
+  return <OnnxSessionContext.Provider value={session}>{children}</OnnxSessionContext.Provider>;
 };

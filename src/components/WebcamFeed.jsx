@@ -1,101 +1,75 @@
 import React, { useEffect, useRef } from 'react';
 import { centerFrame, scaleFrame } from '../utils/tfjsUtils';
-import PropTypes from 'prop-types'; 
-// import { drawLandmarks } from '@mediapipe/drawing_utils';
-import { predictONNX } from '../utils/onnxUtils'
-import { predictTFJS } from '../utils/tfjsUtils'
+import PropTypes from 'prop-types';
+import { predictONNX } from '../utils/onnxUtils';
+import { predictTFJS } from '../utils/tfjsUtils';
 import { TFJS } from '../modelConfigs';
+import { useOnnxSession } from '../utils/OnnxSessionContext';
 
 const CANVAS_WIDTH = 1280;
 const CANVAS_HEIGHT = 720;
 
-const getBackgroundColor = (opacity) => {
-  return `rgba(90, 44, 149, ${opacity})`;
-};
+const getBackgroundColor = (opacity) => `rgba(90, 44, 149, ${opacity})`;
+const getLandmarkColor = (opacity) => `rgba(255, 224, 143, ${opacity})`;
+const getConnectionColor = (opacity) => `rgba(156, 194, 194, ${opacity})`;
 
-const getLandmarkColor = (opacity) => {
-  return `rgba(255, 224, 143, ${opacity})`;
-};
 let currentLandmarkOpacity = 0;
 const targetLandmarkOpacity = 1;
-
-const getConnectionColor = (opacity) => {
-  return `rgba(156, 194, 194, ${opacity})`;
-};
 let currentConnectionOpacity = 0;
 const targetConnectionOpacity = 1;
-
 let currentDarkLayerOpacity = 0;
 const targetDarkLayerOpacity = 0.6;
-
 let framesBatch = [];
-
 let TFJSmodel = null;
 
-function WebcamFeed({ className, modelConfig, session, setPrediction, handleGestureSuccess }) {
+function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSuccess }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const session = useOnnxSession();
+  const handsRef = useRef(null);
+  const cameraRef = useRef(null);
 
   useEffect(() => {
-
     const videoElement = videoRef.current;
     const canvasElement = canvasRef.current;
-
-    canvasElement.width = CANVAS_WIDTH; // Match the width set for the camera
-    canvasElement.height = CANVAS_HEIGHT; // Match the height set for the camera
-
     const context = canvasElement.getContext('2d');
 
-    // eslint-disable-next-line no-undef
-    const hands = new Hands({
+    canvasElement.width = CANVAS_WIDTH;
+    canvasElement.height = CANVAS_HEIGHT;
+
+    handsRef.current = new Hands({
       locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
     });
 
-    hands.setOptions({
+    handsRef.current.setOptions({
       maxNumHands: 1,
       modelComplexity: 1,
       minDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5,
     });
 
-    hands.onResults(async (results) => {
-      /* 
-        this is the interface for results 
-        export interface Results {
-          multiHandLandmarks: NormalizedLandmarkListList;
-          multiHandWorldLandmarks: LandmarkListList;
-          multiHandedness: Handedness[]; //this tells us left or right
-          image: GpuBuffer; //this is what we draw onto the canvas
-        }
-      */
-
+    handsRef.current.onResults(async (results) => {
       context.save();
       context.clearRect(0, 0, canvasElement.width, canvasElement.height);
       context.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
-      if (results.multiHandLandmarks) {
-        context.fillStyle = getBackgroundColor(currentDarkLayerOpacity); // Set the overlay color to dark grey with 50% opacity
-        context.fillRect(0, 0, canvasElement.width, canvasElement.height); // Cover the entire canvas with the overlay
-        //if hands detected ...
+      if (results.multiHandLandmarks.length) {
+        context.fillStyle = getBackgroundColor(currentDarkLayerOpacity);
+        context.fillRect(0, 0, canvasElement.width, canvasElement.height);
         if (results.multiHandLandmarks.length > 0) {
-
-          //add to frames array
           if (framesBatch.length < modelConfig.frameBatchSize) {
             framesBatch.push(results.multiHandLandmarks[0]);
           } else {
-            if(modelConfig.modelExportType === TFJS){
+            if (modelConfig.modelExportType === TFJS) {
               predictTFJS(framesBatch, modelConfig, setPrediction, handleGestureSuccess);
             } else {
-              predictONNX(framesBatch, session, setPrediction, handleGestureSuccess)
+              predictONNX(framesBatch, session, setPrediction, handleGestureSuccess);
             }
             framesBatch = [];
           }
 
-          //fade in dark layer
           if (currentDarkLayerOpacity < targetDarkLayerOpacity) {
             currentDarkLayerOpacity += 0.03;
           }
-
-          //fade in landmarks and connections
           if (currentLandmarkOpacity < targetLandmarkOpacity) {
             currentLandmarkOpacity += 0.03;
           }
@@ -103,16 +77,11 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
             currentConnectionOpacity += 0.03;
           }
         } else {
-          //if no hands detected, fade out layers
-
-          //fade out dark backgroud
           if (currentDarkLayerOpacity > 0) {
             currentDarkLayerOpacity -= 0.01;
             context.fillStyle = getBackgroundColor(currentDarkLayerOpacity);
             context.fillRect(0, 0, canvasElement.width, canvasElement.height);
           }
-
-          //reset hand opacity
           if (currentLandmarkOpacity > 0) {
             currentLandmarkOpacity = 0;
           }
@@ -121,11 +90,8 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
           }
         }
 
-        //draw the hand landmarks
         for (const landmarks of results.multiHandLandmarks) {
           const centeredLandmarks = scaleFrame(centerFrame(landmarks));
-          //https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.drawingoptions#drawingoptions_interface
-          // eslint-disable-next-line no-undef
           drawConnectors(context, centeredLandmarks, HAND_CONNECTIONS, {
             color: getConnectionColor(currentConnectionOpacity),
             lineWidth: 7,
@@ -136,19 +102,24 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
       context.restore();
     });
 
-    // eslint-disable-next-line no-undef
-    const camera = new Camera(videoElement, {
+    cameraRef.current = new Camera(videoElement, {
       onFrame: async () => {
-        await hands.send({ image: videoElement });
+        await handsRef.current.send({ image: videoElement });
       },
       width: CANVAS_WIDTH,
       height: CANVAS_HEIGHT,
     });
-    camera.start();
+
+    cameraRef.current.start();
+
     return () => {
-      camera.stop();
-      hands.close();
-      hands.onResults(null);
+      if (cameraRef.current) {
+        cameraRef.current.stop();
+      }
+      if (handsRef.current) {
+        handsRef.current.close();
+        handsRef.current.onResults(null);
+      }
     };
   }, [session, modelConfig, setPrediction, handleGestureSuccess]);
 
@@ -167,9 +138,8 @@ function WebcamFeed({ className, modelConfig, session, setPrediction, handleGest
 WebcamFeed.propTypes = {
   className: PropTypes.string.isRequired,
   modelConfig: PropTypes.object.isRequired,
-  session: PropTypes.object,
   setPrediction: PropTypes.func.isRequired,
   handleGestureSuccess: PropTypes.func.isRequired,
-}
+};
 
 export default WebcamFeed;
