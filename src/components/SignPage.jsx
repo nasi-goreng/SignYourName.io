@@ -46,7 +46,7 @@ const SignPage = () => {
       <div>
         <div className="flex items-center space-x-4 justify-end mt-10">
           <select
-            className="w-[200px] h-[40px] bg-[#FEF5F1] border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none border-0 text-right"
+            className="w-[200px] h-[40px] bg-[#FEF5F1] rounded-md text-gray-600 focus:outline-none border-0 text-right"
             onChange={(e) => setSelectedModel(e.target.value)}
             value={selectedModel}
           >
