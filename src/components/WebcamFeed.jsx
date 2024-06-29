@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { centerFrame, scaleFrame } from '../utils/tfjsUtils';
 import PropTypes from 'prop-types';
 import { predictONNX } from '../utils/onnxUtils';
@@ -21,24 +21,23 @@ const targetDarkLayerOpacity = 0.6;
 let framesBatch = [];
 let TFJSmodel = null;
 
-const drawPredictionAboveRender = ({letter, fontSize, fontColor, centeredLandmarks, canvasElement, context}) => {
-  // const fontSize = 45;
-  // const fontColor = getLandmarkColor(currentLandmarkOpacity);
-  const x = canvasElement.width / 2;
-  const tallestLandmark = centeredLandmarks.reduce((prev, current) => (prev.y < current.y ? prev : current));
-  const y = tallestLandmark.y * canvasElement.height - 40; // Adjust the position above the tallest landmark
-  context.font = `${fontSize}px DM mono`;
-  context.fillStyle = fontColor;
-  context.fillText(letter, x, y);  
 
+const getHighestLandmark = (landmarks, setHighestLandmark) => {
+    const highestLandmark = landmarks.reduce((prev, current) => (prev.y < current.y ? prev : current));
+    setHighestLandmark(highestLandmark);
 }
 
-function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSuccess }) {
+
+
+function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSuccess, prediction }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const handsRef = useRef(null);
   const cameraRef = useRef(null);
   const sessionRef = useRef(null);
+
+  const [highestLandmark, setHighestLandmark] = useState({y: .3});
+  const [landMarkColor, setLandMarkColor] = useState('transparent');
 
   useEffect(() => {
     // sessionRef.current = await loadModel(modelConfig.path);
@@ -118,7 +117,8 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
         for (const landmarks of results.multiHandLandmarks) {
           const centeredLandmarks = scaleFrame(centerFrame(landmarks));
 
-          drawPredictionAboveRender({letter: "A", fontSize: 45, fontColor: getLandmarkColor(currentLandmarkOpacity), centeredLandmarks, canvasElement, context})
+          getHighestLandmark(centeredLandmarks, setHighestLandmark);
+          setLandMarkColor(getLandmarkColor(currentLandmarkOpacity))
           
           drawConnectors(context, centeredLandmarks, HAND_CONNECTIONS, {
             color: getConnectionColor(currentConnectionOpacity),
@@ -126,6 +126,8 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
           });
           drawLandmarks(context, centeredLandmarks, { color: getLandmarkColor(currentLandmarkOpacity), radius: 8 });
         }
+      } else {
+        setLandMarkColor('transparent');
       }
       context.restore();
     });
@@ -154,6 +156,21 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
   return (
     <div className={`${className} aspect-[16/9] relative`}>
       <video ref={videoRef} className="w-full h-full object-cover rounded-2xl" style={{ transform: 'scaleX(-1)' }} />
+      <div
+        style={{
+          fontFamily: "DM Mono",
+          position: 'absolute',
+          top: `${highestLandmark.y * 100 - 15}%`,
+          left: '50%',
+          transform: `translate(-50%, -${highestLandmark.y * 100 - 15}%)`,
+          fontSize: '25px',
+          color: landMarkColor,
+          pointerEvents: 'none',
+          zIndex: 1000,
+        }}
+      >
+        {prediction}
+      </div>
       <canvas
         ref={canvasRef}
         className="w-full h-full absolute top-0 left-0 rounded-2xl"
