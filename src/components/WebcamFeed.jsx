@@ -73,6 +73,7 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
     });
 
     handsRef.current.onResults(async (results) => {
+      console.log("on results !!")
       context.save();
       context.clearRect(0, 0, canvasElement.width, canvasElement.height);
       context.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
@@ -100,19 +101,7 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
           if (currentConnectionOpacity < targetConnectionOpacity) {
             currentConnectionOpacity += 0.03;
           }
-        } else {
-          if (currentDarkLayerOpacity > 0) {
-            currentDarkLayerOpacity -= 0.01;
-            context.fillStyle = getBackgroundColor(currentDarkLayerOpacity);
-            context.fillRect(0, 0, canvasElement.width, canvasElement.height);
-          }
-          if (currentLandmarkOpacity > 0) {
-            currentLandmarkOpacity = 0;
-          }
-          if (currentConnectionOpacity > 0) {
-            currentConnectionOpacity = 0;
-          }
-        }
+        } 
 
         for (const landmarks of results.multiHandLandmarks) {
           const centeredLandmarks = scaleFrame(centerFrame(landmarks));
@@ -127,6 +116,18 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
           drawLandmarks(context, centeredLandmarks, { color: getLandmarkColor(currentLandmarkOpacity), radius: 8 });
         }
       } else {
+        if (currentDarkLayerOpacity > 0) {
+          currentDarkLayerOpacity -= 0.02;
+          context.fillStyle = getBackgroundColor(currentDarkLayerOpacity);
+          context.fillRect(0, 0, canvasElement.width, canvasElement.height);
+        }
+        if (currentLandmarkOpacity > 0) {
+          currentLandmarkOpacity = 0;
+        }
+        if (currentConnectionOpacity > 0) {
+          currentConnectionOpacity = 0;
+        }
+        framesBatch = [];
         setLandMarkColor('transparent');
       }
       context.restore();
@@ -167,6 +168,7 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
           color: landMarkColor,
           pointerEvents: 'none',
           zIndex: 1000,
+          transition: 'color 0.25s ease-in',
         }}
       >
         {prediction}
