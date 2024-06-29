@@ -42,24 +42,27 @@ const SignPage = () => {
   }, [location]);
 
   return (
-    <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden">
-      <WebcamFeed
-        handleGestureSuccess={cachedHandleGestureSuccess}
-        setPrediction={setPrediction}
-        className="mt-10 mb-10 w-[668px]"
-        modelConfig={modelConfig}
-      />
-      <div className="flex items-center space-x-4">
-        <select
-          className="w-[200px] h-[40px] bg-[#FFFFFF] border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none"
-          onChange={(e) => setSelectedModel(e.target.value)}
-          value={selectedModel}
-        >
-          <option value="model1">{modelConfigs.model1.name}</option>
-          <option value="model2">{modelConfigs.model2.name}</option>
-          <option value="model3">{modelConfigs.model3.name}</option>
-        </select>
+    <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden ">
+      <div>
+        <div className="flex items-center space-x-4 justify-end">
+          <select
+            className="w-[200px] h-[40px] bg-[#FEF5F1] border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none border-0 text-right"
+            onChange={(e) => setSelectedModel(e.target.value)}
+            value={selectedModel}
+          >
+            <option value="model1">{modelConfigs.model1.name}</option>
+            <option value="model2">{modelConfigs.model2.name}</option>
+            <option value="model3">{modelConfigs.model3.name}</option>
+          </select>
+        </div>      
+        <WebcamFeed
+          handleGestureSuccess={cachedHandleGestureSuccess}
+          setPrediction={setPrediction}
+          className="mt-0 mb-10 w-[668px]"
+          modelConfig={modelConfig}
+        />
       </div>
+      
       <div className="flex items-center space-x-4 dm-mono">
         <input
           type="text"
