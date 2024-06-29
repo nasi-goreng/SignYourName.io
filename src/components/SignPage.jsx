@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import WebcamFeed from './WebcamFeed';
-import { ReactComponent as CheckMark } from '../assets/checkmark.svg';
 import StaticCircle from './StaticCircle';
 import Rectangle from './Rectangle';
 import { modelConfigs } from '../modelConfigs';
+import SignImages from './SignImages';
 
 const SignPage = () => {
   const [name, setName] = useState('');
@@ -17,6 +17,11 @@ const SignPage = () => {
     setSuccessfulGestures(new Array(event.target.value.length).fill(false));
   };
 
+  const handleReset = () => {
+    setName('');
+    setSuccessfulGestures([]);
+  };
+
   const handleGestureSuccess = (gesture) => {
     const index = successfulGestures.indexOf(false);
     const nextLetter = name[index];
@@ -26,6 +31,11 @@ const SignPage = () => {
       setSuccessfulGestures(newSuccessfulGestures);
     }
   };
+
+  useEffect(() => {
+    console.log(prediction)
+    handleGestureSuccess(prediction);
+  }, [prediction]);
 
   const cachedHandleGestureSuccess = useCallback(handleGestureSuccess, [
     successfulGestures,
@@ -74,21 +84,14 @@ const SignPage = () => {
             className="w-[495px] h-[40px] bg-[#FFFFFF] py-3 px-6 gap-2.5 border-2 border-[#CDCDCD] rounded-md text-gray-600 focus:outline-none font-thin"
           />
           <button
-            onClick={() => handleGestureSuccess('A')}
-            className="w-[118px] h-[40px] border-2 border-[#CDCDCD] rounded-2xl focus:outline-none"
+            onClick={handleReset}
+            className="w-[118px] h-[40px] border-2 border-[#CDCDCD] rounded-2xl focus:outline-none hover:border-[#8953CD]"
           >
             <span className="w-[37px] h-[18px] text-16 font-medium leading-17.6 text-left text-[#6C6C6C]">reset</span>
           </button>
+        </div>
       </div>
-      </div>
-      <div id="sign-images" className="flex flex-wrap justify-center">
-        {name.split('').map((letter, index) => (
-          <div key={index} className="relative m-2">
-            <img key={index} src={`/images/examples/${letter}.jpg`} alt={letter} className="w-full h-full" />
-            {successfulGestures[index] && <CheckMark className="absolute inset-0 w-full h-full text-green-500" />}
-          </div>
-        ))}
-      </div>
+      <SignImages name={name} successfulGestures={successfulGestures} />
       <Rectangle className={`absolute h-[155px] top-[-7%] left-[89%] rotate-[70deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[64px] top-[45%] left-[-1%] rotate-[30deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[450px] top-[63%] left-[95%] rotate-[57deg]`} isVisible={visiblity} />

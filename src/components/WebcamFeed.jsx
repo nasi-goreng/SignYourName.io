@@ -35,12 +35,12 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
   const handsRef = useRef(null);
   const cameraRef = useRef(null);
   const sessionRef = useRef(null);
+  let canvasElement;
 
   const [highestLandmark, setHighestLandmark] = useState({y: .3});
   const [landMarkColor, setLandMarkColor] = useState('transparent');
 
   useEffect(() => {
-    // sessionRef.current = await loadModel(modelConfig.path);
     if (modelConfig.modelExportType === ONNX) {
       async function loadModel() {
         try {
@@ -54,12 +54,8 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
       loadModel();
     }
 
-    const videoElement = videoRef.current;
-    const canvasElement = canvasRef.current;
+    canvasElement = canvasRef.current;
     const context = canvasElement.getContext('2d');
-
-    canvasElement.width = CANVAS_WIDTH;
-    canvasElement.height = CANVAS_HEIGHT;
 
     handsRef.current = new Hands({
       locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
@@ -133,6 +129,21 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
       context.restore();
     });
 
+    return () => {
+      if (handsRef.current) {
+        handsRef.current.close();
+        handsRef.current.onResults(null);
+      }
+    };
+  }, [modelConfig]);
+
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    canvasElement = canvasRef.current;
+
+    canvasElement.width = CANVAS_WIDTH;
+    canvasElement.height = CANVAS_HEIGHT;
+
     cameraRef.current = new Camera(videoElement, {
       onFrame: async () => {
         await handsRef.current.send({ image: videoElement });
@@ -147,12 +158,8 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
       if (cameraRef.current) {
         cameraRef.current.stop();
       }
-      if (handsRef.current) {
-        handsRef.current.close();
-        handsRef.current.onResults(null);
-      }
     };
-  }, [modelConfig]);
+  }, []);
 
   return (
     <div className={`${className} aspect-[16/9] relative`}>
