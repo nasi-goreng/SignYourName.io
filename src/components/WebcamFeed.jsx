@@ -3,8 +3,7 @@ import { centerFrame, scaleFrame } from '../utils/tfjsUtils';
 import PropTypes from 'prop-types';
 import { predictONNX } from '../utils/onnxUtils';
 import { predictTFJS } from '../utils/tfjsUtils';
-import { TFJS } from '../modelConfigs';
-import { useOnnxSession } from '../utils/OnnxSessionContext';
+import { TFJS, ONNX } from '../modelConfigs';
 
 const CANVAS_WIDTH = 1280;
 const CANVAS_HEIGHT = 720;
@@ -25,11 +24,25 @@ let TFJSmodel = null;
 function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSuccess }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const session = useOnnxSession();
   const handsRef = useRef(null);
   const cameraRef = useRef(null);
+  const sessionRef = useRef(null);
 
   useEffect(() => {
+    // sessionRef.current = await loadModel(modelConfig.path);
+    if (modelConfig.modelExportType === ONNX) {
+      async function loadModel() {
+        try {
+          const ort = await import('onnxruntime-web');
+          const session = await ort.InferenceSession.create(modelConfig.path);
+          sessionRef.current = session;
+        } catch (error) {
+          console.error('Failed to load the ONNX model:', error);
+        }
+      }
+      loadModel();
+    }
+
     const videoElement = videoRef.current;
     const canvasElement = canvasRef.current;
     const context = canvasElement.getContext('2d');
@@ -62,7 +75,7 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
             if (modelConfig.modelExportType === TFJS) {
               predictTFJS(framesBatch, modelConfig, setPrediction, handleGestureSuccess);
             } else {
-              predictONNX(framesBatch, session, setPrediction, handleGestureSuccess);
+              predictONNX(framesBatch, setPrediction, handleGestureSuccess, sessionRef.current, modelConfig);
             }
             framesBatch = [];
           }
@@ -121,7 +134,7 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
         handsRef.current.onResults(null);
       }
     };
-  }, [session, modelConfig, setPrediction, handleGestureSuccess]);
+  }, [modelConfig]);
 
   return (
     <div className={`${className} aspect-[16/9] relative`}>

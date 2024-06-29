@@ -1,19 +1,19 @@
 import * as ort from 'onnxruntime-web';
 
 const transformFrames = (frames) => {
-  const flattenedFrames = [];
-  // Flatten the array of objects into an array of numbers
-  for (const frame of frames) {
-    for (const mapping of frame) {
-      const { x, y, z } = mapping;
-      flattenedFrames.push(x, y, z);
+    const flattenedFrames = [];
+    // Flatten the array of objects into an array of numbers
+    for (const frame of frames) {
+      for (const mapping of frame) {
+        const { x, y, z } = mapping;
+        flattenedFrames.push(x, y, z);
+      }
     }
-  }
   const concatenatedFrames = new Float32Array(flattenedFrames);
   return new ort.Tensor('float32', concatenatedFrames, [1, 30, 63]);
 };
 
-const preprocess = async (landmarks) => {
+const preprocess = (landmarks) => {
   const flattenedArray = landmarks.flatMap((frame) => frame.map((point) => [point.x, point.y, point.z])).flat();
   const transposedArray = [[], [], []];
   for (let i = 0; i < flattenedArray.length; i += 3) {
@@ -23,7 +23,6 @@ const preprocess = async (landmarks) => {
   }
   const flatTransposedArray = transposedArray.flat();
   const tensor = new Float32Array(flatTransposedArray);
-  const ort = await import('onnxruntime-web');
   return new ort.Tensor('float32', tensor, [1, 3, 1260]);
 };
 
@@ -32,7 +31,7 @@ export const indexToLetter = (index) => {
   return letters[index] || '';
 };
 
-export const predictONNX = async (handLandmarks, session, setPrediction, handleGestureSuccess) => {
+export const predictONNX = async (handLandmarks, setPrediction, handleGestureSuccess, session, modelConfig) => {
   if (!session) {
     console.error('ONNX session is not loaded.');
     return;
@@ -41,16 +40,14 @@ export const predictONNX = async (handLandmarks, session, setPrediction, handleG
   if (handLandmarks) {
     try {
       let inputTensor;
-      if (handLandmarks.length === 30) {
+      if (modelConfig.frameBatchSize === 30) {
         inputTensor = transformFrames(handLandmarks);
-      } else if (handLandmarks.length === 60) {
-        inputTensor = await preprocess(handLandmarks);
+      } else if (modelConfig.frameBatchSize === 60) {
+        inputTensor = preprocess(handLandmarks);
       } else {
         throw new Error('Invalid number of hand landmarks');
       }
 
-
-      // Assuming the input name in the model is 'input' or change accordingly
       const inputName = session.inputNames[0];
 
       const results = await session.run({ [inputName]: inputTensor });
