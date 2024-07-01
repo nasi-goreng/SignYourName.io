@@ -28,7 +28,6 @@ const preprocess = (landmarks) => {
 
 // riko 30 frameBatchSize version (30, 21, 3) ==> (630, 3) ==> (3, 630)
 const preprocessForModel4 = (landmarks) => {
-  console.log(landmarks)
   const flattenedArray = landmarks.flatMap((frame) => frame.map((point) => [point.x, point.y, point.z])).flat();
   const transposedArray = [[], [], []];
   for (let i = 0; i < flattenedArray.length; i += 3) {
