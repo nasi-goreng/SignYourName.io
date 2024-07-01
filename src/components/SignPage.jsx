@@ -4,11 +4,12 @@ import StaticCircle from './StaticCircle';
 import Rectangle from './Rectangle';
 import { modelConfigs } from '../modelConfigs';
 import SignImages from './SignImages';
+import Dropdown from './Dropdown';
 
 const SignPage = () => {
   const [name, setName] = useState('');
   const [successfulGestures, setSuccessfulGestures] = useState([]);
-  const [selectedModel, setSelectedModel] = useState('model2');
+  const [selectedModel, setSelectedModel] = useState(Math.random() < 0.5 ? 'model1' : 'model2');
   const modelConfig = useMemo(() => modelConfigs[selectedModel], [selectedModel]);
   const [prediction, setPrediction] = useState('');
   const [finishedSpellingName, setFinishedSpellingName] = useState(false);
@@ -61,17 +62,24 @@ const SignPage = () => {
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden ">
       <div>
+        {/* <Dropdown modelConfigs={modelConfigs} setSelectedModel={setSelectedModel} selectedModel={selectedModel} /> */}
         <div className="flex items-center space-x-4 justify-end mt-10">
           <select
-            className="w-[200px] h-[40px] bg-[#FEF5F1] rounded-md text-gray-600 focus:outline-none border-0 text-right"
+            className="be-vietnam text-base font-semibold w-[275px] h-[40px] bg-[#FEF5F1] rounded-md text-gray-600 focus:outline-none border-0 text-right"
             onChange={(e) => setSelectedModel(e.target.value)}
             value={selectedModel}
           >
-            <option value="model1">{modelConfigs.model1.name}</option>
-            <option value="model2">{modelConfigs.model2.name}</option>
-            <option value="model3">{modelConfigs.model3.name}</option>
+            <option value="model1" className="dm-mono font-medium text-sm">
+              {modelConfigs.model1.name}
+            </option>
+            <option value="model2" className="dm-mono font-medium text-sm">
+              {modelConfigs.model2.name}
+            </option>
+            <option value="model3" className="dm-mono font-medium text-sm">
+              {modelConfigs.model3.name}
+            </option>
           </select>
-        </div>      
+        </div>
         <WebcamFeed
           prediction={prediction}
           handleGestureSuccess={cachedHandleGestureSuccess}
@@ -81,7 +89,7 @@ const SignPage = () => {
         />
       </div>
       <div>
-      <div className="dm-mono text-lg mb-2">Type your name</div>
+        <div className="dm-mono text-lg mb-2">Type your name</div>
         <div className="flex items-center space-x-4 dm-mono">
           <input
             type="text"
@@ -98,7 +106,15 @@ const SignPage = () => {
           </button>
         </div>
       </div>
-      <SignImages displaySuccessMessage={displaySuccessMessage} setDisplaySuccessMessage={setDisplaySuccessMessage} name={name} resetName={() => setName("")} successfulGestures={successfulGestures} finishedSpellingName={finishedSpellingName} setFinishedSpellingName={setFinishedSpellingName}/>
+      <SignImages
+        displaySuccessMessage={displaySuccessMessage}
+        setDisplaySuccessMessage={setDisplaySuccessMessage}
+        name={name}
+        resetName={() => setName('')}
+        successfulGestures={successfulGestures}
+        finishedSpellingName={finishedSpellingName}
+        setFinishedSpellingName={setFinishedSpellingName}
+      />
       <Rectangle className={`absolute h-[155px] top-[-7%] left-[89%] rotate-[70deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[64px] top-[45%] left-[-1%] rotate-[30deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[450px] top-[63%] left-[95%] rotate-[57deg]`} isVisible={visiblity} />
