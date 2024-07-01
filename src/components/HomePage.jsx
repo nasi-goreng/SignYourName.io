@@ -38,11 +38,16 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex items-center justify-center relative overflow-hidden">
-      <div className="flex flex-row items-center justify-center w-auto z-20 ">
+      <div className="flex flex-row items-center justify-center w-auto">
         {/* Left Side */}
-        <div className={`w-5/6 flex flex-col items-start justify-center text-left p-8 pr-20 pl-3 absolute`} style={{ left: `${getDistanceFromEdge()}%` }}>
+        <div
+          className={`w-5/6 flex flex-col items-start justify-center text-left p-8 pr-20 pl-3 absolute z-20`}
+          style={{ left: `${getDistanceFromEdge()}%` }}
+        >
           <div className="w-1/3">
-            <h1 className="text-[80px] font-[450] leading-[80px] text-[#2B2B2B] mb-4 tracking-wide">Hello, my name is...</h1>
+            <h1 className="text-[80px] font-[450] leading-[80px] text-[#2B2B2B] mb-4 tracking-wide">
+              Hello, my name is...
+            </h1>
             <div className="tracking-wide relative flex items-center mb-4">
               <TypingAnimation
                 words={['LUNA', 'ALEC', 'NEIL']}
@@ -51,8 +56,7 @@ const HomePage = () => {
               />
             </div>
             <p className="w-[425px] px-4 py-2 mt-4 bg-[#FFFFFF] border-[3px] border-[#CDCDCD] rounded-[24px] font-normal text-xl shadow-md dm-mono">
-              Learn how to introduce yourself in ASL!
-              Use Machine Learning to sign your name in seconds.
+              Learn how to introduce yourself in ASL! Use Machine Learning to sign your name in seconds.
               <div className="mt-4">
                 <Button text="let's go" link="/ready" />
               </div>
@@ -60,7 +64,10 @@ const HomePage = () => {
           </div>
         </div>
         {/* Right Side */}
-        <div className={`flex items-center justify-center ml-8 absolute `} style={{ right: `${getDistanceFromEdge()}%` }}>
+        <div
+          className={`flex items-center justify-center ml-8 absolute `}
+          style={{ right: `${getDistanceFromEdge()}%` }}
+        >
           <HandAnimation currentLetter={currentLetter} />
         </div>
       </div>
