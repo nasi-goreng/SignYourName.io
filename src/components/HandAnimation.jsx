@@ -12,7 +12,7 @@ const HandAnimation = ({ currentLetter }) => {
   }, [currentLetter]);
 
   return (
-    <div className="w-[392px] h-[538px] ml-4 flex items-center justify-center">
+    <div className="w-[392px] h-[538px] ml-4 flex items-center justify-center z-10">
       {currentImage ? <img src={currentImage} alt="letter" className="h-full" /> : null}
     </div>
   );
