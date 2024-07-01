@@ -23,10 +23,9 @@ const MobileLandingPage = () => {
       <div className="w-[235.2px] h-[322.8px] flex items-center justify-center z-10">
         <img src={imagePath + currentImage + '.png'} alt="Hand Illustration" className="h-full" />
       </div>
-      <p className="mt-6 text-base leading-20 text-center dm-mono">
-        Thanks for checking our work out!
-        <br />
+      <p className="mt-6 text-base leading-20 text-center dm-mono mx-4">
         Our site is not optimized for mobile devices :(
+        <br />
         <br />
         Please visit us again on from your desktop
         to checkout the project!
