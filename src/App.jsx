@@ -7,9 +7,16 @@ import ReadyPage from './components/ReadyPage';
 import SignPage from './components/SignPage';
 import AboutPage from './components/AboutPage';
 import './index.css';
+import useMobileDetect from './utils/useMobileDetect';
+import MobileLandingPage from './components/MobileLandingPage';
 
 function App() {
   const location = useLocation();
+  const isMobile = useMobileDetect();
+
+  if (isMobile) {
+    return <MobileLandingPage />;
+  }
 
   return (
     <div className="App">
