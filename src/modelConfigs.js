@@ -11,6 +11,16 @@ export const modelConfigs = {
         normalization: ["center", "scale"]
     },
     model2: {
+        id: "model2",
+        name: "CNN-GRU",
+        frameBatchSize: 60,
+        modelExportType: ONNX,
+        path: "/model_60fps.onnx",
+        stepSize: 10,
+        normalization: []
+    },
+    model3: {
+        id: "model3",
         name: "MultiLSTM",
         frameBatchSize: 30,
         modelExportType: ONNX,
@@ -18,13 +28,15 @@ export const modelConfigs = {
         stepSize: 10,
         normalization: []
     },
-    model3: {
-        name: "CNN-GRU",
-        frameBatchSize: 60,
+    model4: {
+        id: "model4",
+        name: "CNN-GRU 30fps",
+        frameBatchSize: 30,
         modelExportType: ONNX,
-        path: "/model_arg.onnx",
+        path: "/model_30fps.onnx",
         stepSize: 10,
         normalization: []
-    }    
+    },
+        
 }
 

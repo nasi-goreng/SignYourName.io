@@ -70,6 +70,7 @@ const SignPage = () => {
             <option value="model1">{modelConfigs.model1.name}</option>
             <option value="model2">{modelConfigs.model2.name}</option>
             <option value="model3">{modelConfigs.model3.name}</option>
+            <option value="model4">{modelConfigs.model4.name}</option>
           </select>
         </div>      
         <WebcamFeed

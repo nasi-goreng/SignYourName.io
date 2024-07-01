@@ -69,7 +69,6 @@ function WebcamFeed({ className, modelConfig, setPrediction, handleGestureSucces
     });
 
     handsRef.current.onResults(async (results) => {
-      console.log("on results !!")
       context.save();
       context.clearRect(0, 0, canvasElement.width, canvasElement.height);
       context.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
