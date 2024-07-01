@@ -39,9 +39,7 @@ const SignPage = () => {
     }
   };
 
-
   useEffect(() => {
-    console.log(prediction)
     handleGestureSuccess(prediction);
   }, [prediction]);
 

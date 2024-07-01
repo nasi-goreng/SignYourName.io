@@ -27,7 +27,7 @@ const MobileLandingPage = () => {
         Our site is not optimized for mobile devices :(
         <br />
         <br />
-        Please visit us again on from your desktop
+        Please visit us again from your desktop
         to checkout the project!
       </p>
     </div>
