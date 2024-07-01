@@ -57,8 +57,6 @@ export const predictONNX = async (handLandmarks, setPrediction, handleGestureSuc
       if (modelConfig.id === 'model3' ) {
         inputTensor = transformFrames(handLandmarks);
       } else if (modelConfig.id === 'model2' ) {
-        inputTensor = preprocess(handLandmarks);
-      } else if (modelConfig.id === 'model4' ) {
         inputTensor = preprocessForModel4(handLandmarks);
       } else {
         throw new Error('Invalid number of hand landmarks');
