@@ -4,6 +4,7 @@ import StaticCircle from './StaticCircle';
 import Rectangle from './Rectangle';
 import { modelConfigs } from '../modelConfigs';
 import SignImages from './SignImages';
+import Dropdown from './Dropdown';
 
 const SignPage = () => {
   const [name, setName] = useState('');
@@ -61,6 +62,7 @@ const SignPage = () => {
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden ">
       <div>
+        {/* <Dropdown modelConfigs={modelConfigs} setSelectedModel={setSelectedModel} selectedModel={selectedModel} /> */}
         <div className="flex items-center space-x-4 justify-end mt-10">
           <select
             className="be-vietnam text-base font-semibold w-[275px] h-[40px] bg-[#FEF5F1] rounded-md text-gray-600 focus:outline-none border-0 text-right"
