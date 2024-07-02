@@ -37,11 +37,11 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FEF5F1] flex items-center justify-center relative overflow-hidden">
-      <div className="flex flex-row items-center justify-center w-auto">
+    <div className="min-h-screen bg-[#FEF5F1] flex items-center justify-center relative overflow-hidden pt-12">
+      <div className="flex flex-row items-center justify-center w-auto mt-2">
         {/* Left Side */}
         <div
-          className={`w-5/6 flex flex-col items-start justify-center text-left p-8 pr-20 pl-3 absolute z-20`}
+          className={`w-5/6 flex flex-col items-start justify-center text-left p-8 pr-20 pl-3 relative z-20`}
           style={{ left: `${getDistanceFromEdge()}%` }}
         >
           <div className="w-1/3">
@@ -65,7 +65,7 @@ const HomePage = () => {
         </div>
         {/* Right Side */}
         <div
-          className={`flex items-center justify-center ml-8 absolute `}
+          className={`flex items-center justify-center ml-8 relative `}
           style={{ right: `${getDistanceFromEdge()}%` }}
         >
           <HandAnimation currentLetter={currentLetter} />
