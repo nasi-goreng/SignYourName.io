@@ -10,7 +10,7 @@ const Header = () => {
     <header className="absolute top-5 left-0 right-0 p-4 flex justify-between items-center bg-transparent z-20">
       <Link
         to="/"
-        className={`bg-[#FEF5F1] text-3xl font-semibold relative ${isAboutPage ? 'bg-custom-purple text-white yellow-hover' : 'text-black purple-hover'}`}
+        className={`bg-[#FEF5F1] text-3xl font-semibold relative ${isAboutPage ? 'bg-transparent text-white yellow-hover' : 'text-black purple-hover'}`}
         style={{ left: `${getDistanceFromEdge()}%` }}
       >
         Sign<i>Your </i>Name
