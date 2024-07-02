@@ -18,14 +18,14 @@ const HomePage = () => {
   const positionC = { top: '6%', left: '92.8%' };
   const positionD = { top: '13.65%', left: '22.5%' };
 
-  const [visiblity, setVisiblity] = useState(true);
+  const [visibility, setVisibility] = useState(true);
   const location = useLocation();
   const [currentLetter, setCurrentLetter] = useState('');
 
   useEffect(() => {
-    setVisiblity(true);
+    setVisibility(true);
     return () => {
-      setVisiblity(false);
+      setVisibility(false);
     };
   }, [location]);
 
@@ -65,7 +65,7 @@ const HomePage = () => {
         </div>
         {/* Right Side */}
         <div
-          className={`flex items-center justify-center ml-8 relative `}
+          className={`flex items-center justify-center ml-8 absolute `}
           style={{ right: `${getDistanceFromEdge()}%` }}
         >
           <HandAnimation currentLetter={currentLetter} />
@@ -77,18 +77,18 @@ const HomePage = () => {
       <AnimatedCircle initialPosition={positionD} targetPosition={positionC} delay={0.2} />
 
       {/* Decorative Teal Rectangles */}
-      <Rectangle className={`absolute h-[910.71px] top-1/2 left-1/2 rotate-[-95.99deg]`} isVisible={visiblity} />
+      <Rectangle className={`absolute h-[910.71px] top-1/2 left-1/2 rotate-[-95.99deg]`} isVisible={visibility} />
       <Rectangle
         className={`absolute h-[351.63px] top-[70.86%] left-[4.33%] rotate-[-49.89deg]`}
-        isVisible={visiblity}
+        isVisible={visibility}
       />
-      <Rectangle className={`absolute h-[160px] top-0 left-[6.32%]`} isVisible={visiblity} />
-      <Rectangle className={`absolute h-[361.45px] top-[-13%] left-[20%] rotate-[48.8deg]`} isVisible={visiblity} />
-      <Rectangle className={`absolute h-[160px] top-[-5%] left-[93%] rotate-[-25.35deg]`} isVisible={visiblity} />
-      <Rectangle className={`absolute h-[160px] top-[85%] left-[96%] rotate-[-65.22deg]`} isVisible={visiblity} />
+      <Rectangle className={`absolute h-[160px] top-0 left-[6.32%]`} isVisible={visibility} />
+      <Rectangle className={`absolute h-[361.45px] top-[-13%] left-[20%] rotate-[48.8deg]`} isVisible={visibility} />
+      <Rectangle className={`absolute h-[160px] top-[-5%] left-[93%] rotate-[-25.35deg]`} isVisible={visibility} />
+      <Rectangle className={`absolute h-[160px] top-[85%] left-[96%] rotate-[-65.22deg]`} isVisible={visibility} />
       {/* Decorative Yellow Circles */}
-      <StaticCircle className={`top-[90.57%] left-[10.35%]`} isVisible={visiblity} />
-      <StaticCircle className={`top-[12.77%] left-[1.74%]`} isVisible={visiblity} />
+      <StaticCircle className={`top-[90.57%] left-[10.35%]`} isVisible={visibility} />
+      <StaticCircle className={`top-[12.77%] left-[1.74%]`} isVisible={visibility} />
     </div>
   );
 };
