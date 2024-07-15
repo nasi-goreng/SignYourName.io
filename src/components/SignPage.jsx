@@ -27,6 +27,7 @@ const SignPage = () => {
   };
 
   const handleGestureSuccess = (gesture) => {
+    console.log({gesture})
     const index = successfulGestures.indexOf(false);
     const nextLetter = name[index];
     if (gesture === nextLetter) {
@@ -58,7 +59,7 @@ const SignPage = () => {
   }, [location]);
 
   return (
-    <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-32 relative overflow-hidden ">
+    <div className="min-h-screen bg-[#FEF5F1] flex flex-col items-center justify-start pt-[4vh] relative overflow-hidden ">
       <div>
         {/* <Dropdown modelConfigs={modelConfigs} setSelectedModel={setSelectedModel} selectedModel={selectedModel} /> */}
         <div className="flex items-center space-x-4 justify-end mt-10">
@@ -82,12 +83,12 @@ const SignPage = () => {
           prediction={prediction}
           handleGestureSuccess={cachedHandleGestureSuccess}
           setPrediction={setPrediction}
-          className="mb-6 w-[668px]"
+          className="mb-4 w-[40vw]"
           modelConfig={modelConfig}
         />
       </div>
       <div>
-        <div className="dm-mono text-lg mb-2">Type your name</div>
+        <div className="dm-mono text-lg mb-1">Type your name</div>
         <div className="flex items-center space-x-4 dm-mono">
           <input
             type="text"
@@ -105,6 +106,10 @@ const SignPage = () => {
         </div>
       </div>
       <SignImages
+        onPressSkip={() => {
+          const nextLetter = name[successfulGestures.indexOf(false)];
+          cachedHandleGestureSuccess(nextLetter);
+        }}
         displaySuccessMessage={displaySuccessMessage}
         setDisplaySuccessMessage={setDisplaySuccessMessage}
         name={name}

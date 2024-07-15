@@ -38,14 +38,18 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-[#FEF5F1] flex items-center justify-center relative overflow-hidden pt-12">
-      <div className="flex flex-row items-center justify-center w-auto mt-2">
+      <div className="flex flex-row items-center justify-center w-auto mt-2 w-full">
         {/* Left Side */}
         <div
           className={`w-5/6 flex flex-col items-start justify-center text-left p-8 pr-20 pl-3 relative z-20`}
           style={{ left: `${getDistanceFromEdge()}%` }}
         >
           <div className="w-1/3">
-            <h1 className="text-[80px] font-[450] leading-[80px] text-[#2B2B2B] mb-4 tracking-wide">
+            <h1 
+              style={{fontSize: "4.5vw",
+                lineHeight: "4.5vw"}}
+              className="text-[80px] font-[450] leading-[80px] text-[#2B2B2B] mb-4 tracking-wide"
+            >
               Hello, my name is...
             </h1>
             <div className="tracking-wide relative flex items-center mb-4">
@@ -68,7 +72,7 @@ const HomePage = () => {
           className={`flex items-center justify-center ml-8 relative `}
           style={{ right: `${getDistanceFromEdge()}%` }}
         >
-          <HandAnimation currentLetter={currentLetter} />
+          <HandAnimation currentLetter={"L"} />
         </div>
       </div>
 

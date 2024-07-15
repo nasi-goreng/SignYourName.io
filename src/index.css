@@ -50,3 +50,18 @@
   }
 }
 
+
+.skip-fade-in {
+  opacity: 0;
+  animation: skipFadeIn 4s forwards;
+  animation-delay: 2s;
+}
+
+@keyframes skipFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
