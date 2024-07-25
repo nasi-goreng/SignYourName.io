@@ -76,23 +76,23 @@ const HomePage = () => {
         </div>
       </div>
 
-      <AnimatedCircle initialPosition={positionE} targetPosition={positionA} delay={0.2} />
-      <AnimatedCircle initialPosition={positionF} targetPosition={positionB} delay={0.2} />
-      <AnimatedCircle initialPosition={positionD} targetPosition={positionC} delay={0.2} />
+      {/* <AnimatedCircle initialPosition={positionE} targetPosition={positionA} delay={0.2} /> */}
+      <AnimatedCircle initialPosition={positionF} targetPosition={positionB} delay={0.2} className="circle circle-d"/>
+      <AnimatedCircle initialPosition={positionD} targetPosition={positionC} delay={0.2} className="circle circle-c" />
 
       {/* Decorative Teal Rectangles */}
-      <Rectangle className={`absolute h-[910.71px] top-1/2 left-1/2 rotate-[-95.99deg]`} isVisible={visiblity} />
-      <Rectangle
+      {/* <Rectangle className={`absolute h-[910.71px] top-1/2 left-1/2 rotate-[-95.99deg]`} isVisible={visiblity} /> */}
+      {/* <Rectangle
         className={`absolute h-[351.63px] top-[70.86%] left-[4.33%] rotate-[-49.89deg]`}
         isVisible={visiblity}
-      />
-      <Rectangle className={`absolute h-[160px] top-0 left-[6.32%]`} isVisible={visiblity} />
-      <Rectangle className={`absolute h-[361.45px] top-[-13%] left-[20%] rotate-[48.8deg]`} isVisible={visiblity} />
+      /> */}
+      {/* <Rectangle className={`absolute h-[160px] top-0 left-[6.32%]`} isVisible={visiblity} /> */}
+      {/* <Rectangle className={`absolute h-[361.45px] top-[-13%] left-[20%] rotate-[48.8deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[160px] top-[-5%] left-[93%] rotate-[-25.35deg]`} isVisible={visiblity} />
-      <Rectangle className={`absolute h-[160px] top-[85%] left-[96%] rotate-[-65.22deg]`} isVisible={visiblity} />
+      <Rectangle className={`absolute h-[160px] top-[85%] left-[96%] rotate-[-65.22deg]`} isVisible={visiblity} /> */}
       {/* Decorative Yellow Circles */}
-      <StaticCircle className={`top-[90.57%] left-[10.35%]`} isVisible={visiblity} />
-      <StaticCircle className={`top-[12.77%] left-[1.74%]`} isVisible={visiblity} />
+      <StaticCircle className={`top-[90.57%] left-[10.35%] circle circle-b`} isVisible={visiblity} />
+      <StaticCircle className={`top-[12.77%] left-[1.74%] circle circle-a`} isVisible={visiblity} />
     </div>
   );
 };
