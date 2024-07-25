@@ -11,11 +11,11 @@ const Header = () => {
       <Link
         to="/"
         className={`bg-[#FEF5F1] text-3xl font-semibold relative ${isAboutPage ? 'bg-transparent text-white yellow-hover' : 'text-black purple-hover'}`}
-        style={{ left: `${getDistanceFromEdge()}%` }}
+        style={{ left: `${getDistanceFromEdge()}` }}
       >
         Sign<i>Your </i>Name
       </Link>
-      <nav className={`absolute`} style={{ right: `${getDistanceFromEdge()}%` }}>
+      <nav className={`absolute`} style={{ right: `${getDistanceFromEdge()}` }}>
         {location.pathname !== '/' && (
           <Link to="/" className={`mr-4 text-2xl font-medium  ${isAboutPage ? 'text-white yellow-hover' : 'text-black purple-hover'}`}>
             Home

@@ -42,7 +42,7 @@ const HomePage = () => {
         {/* Left Side */}
         <div
           className={`w-5/6 flex flex-col items-start justify-center text-left p-8 pr-20 pl-3 relative z-20`}
-          style={{ left: `${getDistanceFromEdge()}%` }}
+          style={{ left: `${getDistanceFromEdge()}` }}
         >
           <div className="w-1/3">
             <h1 
@@ -70,7 +70,7 @@ const HomePage = () => {
         {/* Right Side */}
         <div
           className={`flex items-center justify-center ml-8 relative `}
-          style={{ right: `${getDistanceFromEdge()}%` }}
+          style={{ right: `${getDistanceFromEdge()}` }}
         >
           <HandAnimation currentLetter={"L"} />
         </div>
