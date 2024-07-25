@@ -36,18 +36,18 @@ const ReadyPage = () => {
         </div>
       </div>
 
-      <AnimatedCircle initialPosition={positionA} targetPosition={positionE} delay={0.2} />
-      <AnimatedCircle initialPosition={positionB} targetPosition={positionF} delay={0.2} />
-      <AnimatedCircle initialPosition={positionC} targetPosition={positionD} delay={0.2} />
+      <AnimatedCircle initialPosition={positionA} targetPosition={positionE} delay={0.2} className="circle circle-e"/>
+      <AnimatedCircle initialPosition={positionB} targetPosition={positionF} delay={0.2} className="circle circle-f"/>
+      <AnimatedCircle initialPosition={positionC} targetPosition={positionD} delay={0.2} className="circle circle-g"/>
 
       {/* Decorative Teal Rectangles */}
-      <Rectangle className={`absolute h-[155px] top-[90.07%] left-[10%] rotate-[-50deg]`} isVisible={visiblity} />
+      {/* <Rectangle className={`absolute h-[155px] top-[90.07%] left-[10%] rotate-[-50deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[276px] top-[-8.35%] left-[20%] rotate-[-30deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[276px] top-[0%] left-[93%] rotate-[-50.35deg]`} isVisible={visiblity} />
-      <Rectangle className={`absolute h-[500px] top-[50%] left-[98%] rotate-[10deg]`} isVisible={visiblity} />
+      <Rectangle className={`absolute h-[500px] top-[50%] left-[98%] rotate-[10deg]`} isVisible={visiblity} /> */}
 
       {/* Decorative Yello Circles */}
-      <StaticCircle className={`top-[81.14%] left-[-2.5%]`} isVisible={visiblity} />
+      <StaticCircle className={`top-[81.14%] left-[-2.5%] circle circle-h`} isVisible={visiblity} />
     </div>
   );
 };

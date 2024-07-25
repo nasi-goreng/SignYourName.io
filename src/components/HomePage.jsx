@@ -76,9 +76,11 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* <AnimatedCircle initialPosition={positionE} targetPosition={positionA} delay={0.2} /> */}
+      <AnimatedCircle initialPosition={positionE} targetPosition={positionA} delay={0.2} />
       <AnimatedCircle initialPosition={positionF} targetPosition={positionB} delay={0.2} className="circle circle-d"/>
       <AnimatedCircle initialPosition={positionD} targetPosition={positionC} delay={0.2} className="circle circle-c" />
+      <StaticCircle className={`top-[90.57%] left-[10.35%] circle circle-b`} isVisible={visiblity} />
+      <StaticCircle className={`top-[12.77%] left-[1.74%] circle circle-a`} isVisible={visiblity} />
 
       {/* Decorative Teal Rectangles */}
       {/* <Rectangle className={`absolute h-[910.71px] top-1/2 left-1/2 rotate-[-95.99deg]`} isVisible={visiblity} /> */}
@@ -91,8 +93,6 @@ const HomePage = () => {
       <Rectangle className={`absolute h-[160px] top-[-5%] left-[93%] rotate-[-25.35deg]`} isVisible={visiblity} />
       <Rectangle className={`absolute h-[160px] top-[85%] left-[96%] rotate-[-65.22deg]`} isVisible={visiblity} /> */}
       {/* Decorative Yellow Circles */}
-      <StaticCircle className={`top-[90.57%] left-[10.35%] circle circle-b`} isVisible={visiblity} />
-      <StaticCircle className={`top-[12.77%] left-[1.74%] circle circle-a`} isVisible={visiblity} />
     </div>
   );
 };
