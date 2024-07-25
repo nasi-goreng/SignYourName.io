@@ -39,7 +39,7 @@ const SignImages = ({ name, successfulGestures, finishedSpellingName, setFinishe
                 alt={letter}
                 className="w-[150px] h-[150px] rounded-3xl"
                 style={{
-                  border: displaySuccessMessage ? "3px solid rgb(137 83 205)" : "3px solid #CDCDCD"
+                  border: successfulGestures[index] ? "3px solid rgb(137 83 205)" : "3px solid #CDCDCD"
                 }}
               />
               {successfulGestures[index] ? (
