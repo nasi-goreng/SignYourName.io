@@ -25,10 +25,14 @@ const SignImages = ({ name, successfulGestures, finishedSpellingName, setFinishe
   }, [finishedSpellingName, name, setFinishedSpellingName]);
 
   return (
-    <div id="sign-images" className="flex flex-col items-center mt-4">
-      {hasImages && !displaySuccessMessage && <p className="h-[21px] dm-mono font-medium text-lg mb-3">Copy the gestures</p>}
+    <div id="sign-images" className="flex flex-col items-center mt-4 z-20">
+      {hasImages && !displaySuccessMessage && (
+        <p className="h-[21px] dm-mono font-medium text-lg mb-3">Copy the gestures</p>
+      )}
       {displaySuccessMessage && (
-        <p className="h-[21px] dm-mono font-medium text-lg mb-3">Great Work 💜 Now try typing <b>any</b> word!</p>
+        <p className="h-[21px] dm-mono font-medium text-lg mb-3">
+          Great Work 💜 Now try typing <b>any</b> word!
+        </p>
       )}
       <div className="flex flex-row justify-center flex-wrap">
         {name.split('').map((letter, index) => (
@@ -39,7 +43,7 @@ const SignImages = ({ name, successfulGestures, finishedSpellingName, setFinishe
                 alt={letter}
                 className="w-[150px] h-[150px] rounded-3xl"
                 style={{
-                  border: successfulGestures[index] ? "3px solid rgb(137 83 205)" : "3px solid #CDCDCD"
+                  border: successfulGestures[index] ? '3px solid rgb(137 83 205)' : '3px solid #CDCDCD',
                 }}
               />
               {successfulGestures[index] ? (
@@ -49,7 +53,12 @@ const SignImages = ({ name, successfulGestures, finishedSpellingName, setFinishe
               )}
             </div>
             {!successfulGestures[index] && !successfulGestures.slice(0, index).includes(false) && (
-              <div className="mb-3 text-center text-gray-500 underline cursor-pointer dm-mono text-sm skip-fade-in" onClick={onPressSkip}>skip</div>
+              <div
+                className="mb-3 text-center text-gray-500 underline cursor-pointer dm-mono text-sm skip-fade-in"
+                onClick={onPressSkip}
+              >
+                skip
+              </div>
             )}
           </div>
         ))}
