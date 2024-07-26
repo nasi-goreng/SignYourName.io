@@ -1,14 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const StaticCircle = ({ style, isVisible, className }) => {
+const StaticCircle = ({ style, isVisible, className, inlineStyle }) => {
   return (
     <motion.div
-      className={`absolute w-[164px] h-[164px] bg-[#FFE08F] rounded-full z-10 ${className}`}
+      style={inlineStyle}
+      className={`absolute w-[164px] h-[164px] bg-[#FFE08F] rounded-full ${className}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: isVisible ? 1 : 0 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
+      exit={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
     />
   );
 };
