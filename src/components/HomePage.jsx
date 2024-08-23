@@ -72,7 +72,7 @@ const HomePage = () => {
           className={`flex items-center justify-center ml-8 relative `}
           style={{ right: `${getDistanceFromEdge()}` }}
         >
-          <HandAnimation currentLetter={"L"} />
+          <HandAnimation currentLetter={currentLetter} />
         </div>
       </div>
 
